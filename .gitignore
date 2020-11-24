@@ -1,5 +1,7 @@
 config.json
 credentials.json
 token.json
+player_discord_links.json
+
 .idea/
 /node_modules/

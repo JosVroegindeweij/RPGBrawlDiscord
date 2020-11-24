@@ -10,6 +10,10 @@ let client;
 let scheduledTask;
 
 function execute(message) {
+    if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){
+        message.reply(`Only staff members can use this command!`);
+        return;
+    }
     if (!scheduledTask) {
         scheduledTask = setInterval(execute, 600 * 1000);
     }
@@ -17,7 +21,7 @@ function execute(message) {
         client = message.client;
     }
     latestRequest = message;
-    call(getRange, [spreadsheetID, 'SR1!AC3:AC42', saveLogins]);
+    call(getRange, [spreadsheetID, 'SR1!AD3:AD42', saveLogins]);
     call(getRange, [spreadsheetID, 'SR1!AA3:AA42', saveAvgs]);
 }
 
@@ -61,9 +65,9 @@ function replyRange() {
 function generateTable() {
     let table = new AsciiTable('TA Rankings');
     table.setBorder('|', '-', '+', '+');
-    table.setHeading('Rank', 'login' /* possibly linked discord name later */, 'avg');
+    table.setHeading('Rank', 'login', 'avg');
     logins.forEach((login, index) => {
-        let avg = round(+(avgs[index][0].replace(/,/, '.')), 1);
+        let avg = (+(avgs[index][0].replace(/,/, '.'))).toFixed(1);
         table.addRow(index + 1, login, avg);
     })
     table.setAlign(0, AsciiTable.RIGHT);
@@ -72,18 +76,12 @@ function generateTable() {
     return table.toString();
 }
 
-function round(value, precision) {
-    const multiplier = Math.pow(10, precision || 0);
-    return Math.round(value * multiplier) / multiplier;
-}
-
 String.prototype.insert = function (index, string) {
     if (index > 0) {
         return this.substring(0, index) + string + this.substr(index);
     }
     return string + this;
 };
-
 
 module.exports = {
     name: 'getqualified',
