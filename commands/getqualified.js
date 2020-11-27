@@ -12,7 +12,8 @@ let scheduledTask = {};
 
 function execute(message) {
     if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){
-        message.reply(`Only staff members can use this command!`);
+        message.reply(`Only staff members can use this command!`)
+            .catch(console.error);
         return;
     }
     if (!scheduledTask[message.channel.id]) {
@@ -32,7 +33,8 @@ function execute_requests(channel) {
 
 function stop_scheduler(message) {
     if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){
-        message.reply(`Only staff members can use this command!`);
+        message.reply(`Only staff members can use this command!`)
+            .catch(console.error);
         return;
     }
     if (scheduledTask[message.channel.id]) {
@@ -65,9 +67,11 @@ function replyRange(channel) {
     }
     if (!response[channel.id]) {
         channel.send('```\n' + table + '```')
-            .then(message => response[channel.id] = message);
+            .then(message => response[channel.id] = message)
+            .catch(console.error);
     } else {
         response[channel.id].edit('```\n' + table + '```')
+            .catch(console.error);
     }
     logins = [];
     avgs = [];
@@ -94,13 +98,6 @@ function generateTable(channel) {
     table.setAlign(2, AsciiTable.LEFT);
     return table.toString();
 }
-
-String.prototype.insert = function (index, string) {
-    if (index > 0) {
-        return this.substring(0, index) + string + this.substr(index);
-    }
-    return string + this;
-};
 
 module.exports = {
     name: 'getqualified',

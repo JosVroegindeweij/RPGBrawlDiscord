@@ -17,6 +17,7 @@ function execute(message, args) {
         type: 'category',
     })
         .then(category => {
+            console.log('Created Bot channel category.')
             channelManager.create('staff', {
                 topic: 'Staff commands - !reload - !addmatch',
                 parent: category,
@@ -34,7 +35,9 @@ function execute(message, args) {
                         allow: ['VIEW_CHANNEL']
                     }
                 ]
-            }).catch(console.error);
+            })
+                .then(channel => console.log('Created staff channel.'))
+                .catch(console.error);
 
             channelManager.create('ta-standings', {
                 topic: 'TA standings updates - !gq - !sgq',
@@ -53,12 +56,16 @@ function execute(message, args) {
                         allow: ['SEND_MESSAGES']
                     }
                 ]
-            }).catch(console.error);
+            })
+                .then(channel => console.log('Created TA-standings channel.'))
+                .catch(console.error);
 
             channelManager.create('linking', {
                 topic: 'Linking trackmania logins with discord users - !link login [mention] - !unlink login',
                 parent: category
-            }).catch(console.error);
+            })
+                .then(channel => console.log('Created linking channel.'))
+                .catch(console.error);
         })
         .catch(console.error);
 

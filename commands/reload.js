@@ -5,10 +5,9 @@ module.exports = {
     description: 'Reloads all commands',
     execute(message, args) {
         if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){
-            message.reply(`Only staff members can use this command!`);
+            message.reply(`Only staff members can use this command!`).catch(console.error);
             return;
         }
-        message.reply('Reloading all commands!');
         const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
         commandFiles.forEach(
             file => {
@@ -17,6 +16,7 @@ module.exports = {
                 message.client.commands.set(command.name, command);
             }
         );
+        message.reply('Reloaded all commands!').catch(console.error);
         console.log('Reloaded all commands');
     },
     syntax: '!reload'

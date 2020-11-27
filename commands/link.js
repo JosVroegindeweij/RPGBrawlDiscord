@@ -11,18 +11,19 @@ function execute(message, args) {
     let discord_user_id = message.author.id;
     if (args.length === 2) {
         if (!message.member) {
-            message.reply(`You can't link other players in DM`);
+            message.reply(`You can't link other players in DM`).catch(console.error);
             return;
         }
         if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')) {
-            message.reply(`You don't have permissions to link other players!`);
+            message.reply(`You don't have permissions to link other players!`).catch(console.error);
             return;
         }
         let id = getIdFromMention(args[1]);
         if (id) {
             discord_user_id = id;
         } else {
-            message.reply('You entered a second argument, but it is not a mention. Please try again!');
+            message.reply('You entered a second argument, but it is not a mention. Please try again!')
+                .catch(console.error);
             return;
         }
     }
@@ -41,7 +42,10 @@ function execute(message, args) {
                 permissions: 0,
             }
         })
-            .then(role => add_user_to_role(message, args[0], user, role))
+            .then(role => {
+                add_user_to_role(message, args[0], user, role);
+                console.log(`Linked login '${login}' to discord username '${user.username}#${user.tag}'`);
+            })
             .catch(console.error);
     } else {
         add_user_to_role(message, args[0], user, linked_role);
@@ -52,8 +56,8 @@ function execute(message, args) {
 function add_user_to_role(message, login, user, role) {
     user.roles.add(role)
         .then(_ => {
-            message.reply(`Linked login '${login}' with user ${user}`)
-        })
+            message.reply(`Linked login '${login}' with user ${user}`).catch(console.error)
+        }).catch(console.error)
 }
 
 function get_discord_id_by_login(login) {
@@ -62,28 +66,30 @@ function get_discord_id_by_login(login) {
 
 function unlink(message, args) {
     if (!message.member) {
-        message.reply(`You can't unlink players in DM`);
+        message.reply(`You can't unlink players in DM`).catch(console.error);
         return;
     }
     if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')){
         message.reply(`Please let someone with permissions look at this, - ${message.guild.roles.cache.find(
             role => role.name === 'linker'
-        )} -`);
+        )} -`).catch(console.error);
         return;
     }
 
     if (!args.length) {
-        message.reply(`You forgot to add a login to unlink!`);
+        message.reply(`You forgot to add a login to unlink!`).catch(console.error);
         return;
 
     }
     delete links[args[0]];
-    message.reply(`Unlinked login '${args[0]}'`);
+    message.reply(`Unlinked login '${args[0]}'`).catch(console.error);
+    console.log(`Unlinked login '${args[0]}'`);
     save_links();
 }
 
 function save_links() {
     fs.writeFileSync('player_discord_links.json', JSON.stringify(links));
+    console.log('Saved links to JSON');
 }
 
 function getIdFromMention(mention) {
@@ -91,10 +97,6 @@ function getIdFromMention(mention) {
     if (!matches) return;
     return matches[1];
 }
-
-
-
-
 
 module.exports = {
     name: 'link',
