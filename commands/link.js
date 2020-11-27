@@ -14,12 +14,12 @@ function execute(message, args) {
             message.reply(`You can't link other players in DM`);
             return;
         }
-        if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')){
+        if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')) {
             message.reply(`You don't have permissions to link other players!`);
             return;
         }
         let id = getIdFromMention(args[1]);
-        if (id){
+        if (id) {
             discord_user_id = id;
         } else {
             message.reply('You entered a second argument, but it is not a mention. Please try again!');
@@ -30,12 +30,39 @@ function execute(message, args) {
 
     save_links();
 
-    message.reply(`Linked login '${args[0]}' with user ${message.author}`);
+    let linked_role = message.guild.roles.cache.find(r => r.name.toLowerCase() === 'linked');
+    let user = message.guild.members.cache.get(discord_user_id);
+
+    if (!linked_role) {
+        message.guild.roles.create({
+            data: {
+                name: 'linked',
+                color: 'DEFAULT',
+                permissions: 0,
+            }
+        })
+            .then(role => add_user_to_role(message, args[0], user, role))
+            .catch(console.error);
+    } else {
+        add_user_to_role(message, args[0], user, linked_role);
+    }
+
+}
+
+function add_user_to_role(message, login, user, role) {
+    user.roles.add(role)
+        .then(_ => {
+            message.reply(`Linked login '${login}' with user ${user}`)
+        })
+}
+
+function get_discord_id_by_login(login) {
+    return links[login];
 }
 
 function unlink(message, args) {
     if (!message.member) {
-        message.reply(`You can't unlink other players in DM`);
+        message.reply(`You can't unlink players in DM`);
         return;
     }
     if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')){
@@ -75,5 +102,6 @@ module.exports = {
     description: 'Links a trackmania login to a discord user.',
     execute,
     unlink,
+    get_discord_id_by_login,
     syntax: '!link login [mention]'
 };
