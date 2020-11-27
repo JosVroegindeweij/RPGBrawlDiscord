@@ -3,7 +3,7 @@ const fs = require('fs');
 module.exports = {
     name: 'reload',
     description: 'Reloads all commands',
-    execute(message, args) {
+    execute(message) {
         if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){
             message.reply(`Only staff members can use this command!`).catch(console.error);
             return;

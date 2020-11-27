@@ -1,6 +1,6 @@
 
 
-function execute(message, args) {
+function execute(message) {
     if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){
         message.reply(`Only staff members can use this command!`);
         return;
@@ -36,7 +36,7 @@ function execute(message, args) {
                     }
                 ]
             })
-                .then(channel => console.log('Created staff channel.'))
+                .then(console.log('Created staff channel.'))
                 .catch(console.error);
 
             channelManager.create('ta-standings', {
@@ -57,14 +57,14 @@ function execute(message, args) {
                     }
                 ]
             })
-                .then(channel => console.log('Created TA-standings channel.'))
+                .then(console.log('Created TA-standings channel.'))
                 .catch(console.error);
 
             channelManager.create('linking', {
                 topic: 'Linking trackmania logins with discord users - !link login [mention] - !unlink login',
                 parent: category
             })
-                .then(channel => console.log('Created linking channel.'))
+                .then(console.log('Created linking channel.'))
                 .catch(console.error);
         })
         .catch(console.error);

@@ -4,7 +4,8 @@ module.exports = {
     description: 'Adds a new match, creates channel for the match.',
     execute(message) {
         if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){
-            message.reply(`Only staff members can use this command!`);
+            message.reply(`Only staff members can use this command!`)
+                .catch(console.error);
             return;
         }
         message.channel.send('Hello world')
