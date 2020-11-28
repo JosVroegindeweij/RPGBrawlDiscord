@@ -10,5 +10,6 @@ module.exports = {
         }
         message.channel.send('Hello world')
     },
-    syntax: '!addmatch '
+    syntax: '!addmatch ',
+    channel: 'staff'
 };

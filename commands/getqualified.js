@@ -1,5 +1,6 @@
-const {spreadsheetID} = require('../config.json');
-const {call, getRange} = require('../googleIntegration.js');
+const Utils = require('../utils/utils');
+const {spreadsheetID, loginRange, avgsRange} = require('../secrets/config.json');
+const {call, getRange} = require('../utils/googleIntegration.js');
 const AsciiTable = require('ascii-table');
 const { get_discord_id_by_login } = require('./link.js');
 
@@ -27,12 +28,14 @@ function execute(message) {
 }
 
 function execute_requests(channel) {
-    call(getRange, [spreadsheetID, 'SR1!AD3:AD42', saveLogins.bind(null, channel)]);
-    call(getRange, [spreadsheetID, 'SR1!AA3:AA42', saveAvgs.bind(null, channel)]);
+    console.log('--------------------');
+    console.log(channel.id);
+    call(getRange, [spreadsheetID, loginRange, saveLogins.bind(null, channel)]);
+    call(getRange, [spreadsheetID, avgsRange, saveAvgs.bind(null, channel)]);
 }
 
 function stop_scheduler(message) {
-    if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){
+    if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){c
         message.reply(`Only staff members can use this command!`)
             .catch(console.error);
         return;
@@ -60,7 +63,8 @@ function replyRange(channel) {
 
     let delimiter = /\n\+-+\+/;
     let border = /\n\|\s*33/;
-    table = table.insert(table.search(border), table.match(delimiter)[0]);
+
+    table = Utils.insert(table, table.match(delimiter)[0], table.search(border));
 
     if (latestRequest[channel.id]) {
         latestRequest[channel.id].delete();
@@ -89,6 +93,7 @@ function generateTable(channel) {
             login = login[0];
         }
         let char_regex = /[^A-Za-z_0-9]+/;
+        let escape_regex = /[%]/;
         login = login.replace(char_regex, '');
         let avg = (+(avgs[channel.id][index][0].replace(/,/, '.'))).toFixed(1);
         table.addRow(index + 1, login, avg);
@@ -105,5 +110,6 @@ module.exports = {
     description: 'Gets list of qualified players from spreadsheet and pastes them in the channel',
     execute,
     stop_scheduler,
-    syntax: '!getqualified',
+    syntax: '!getqualified / !update / !gq',
+    channel: 'ta-standings'
 }

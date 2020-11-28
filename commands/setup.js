@@ -14,7 +14,7 @@ function execute(message) {
 
 
     channelManager.create('RPG Brawl bot', {
-        type: 'category',
+        type: 'category'
     })
         .then(category => {
             console.log('Created Bot channel category.')
@@ -36,7 +36,7 @@ function execute(message) {
                     }
                 ]
             })
-                .then(console.log('Created staff channel.'))
+                .then(_ => console.log('Created staff channel.'))
                 .catch(console.error);
 
             channelManager.create('ta-standings', {
@@ -57,14 +57,14 @@ function execute(message) {
                     }
                 ]
             })
-                .then(console.log('Created TA-standings channel.'))
+                .then(_ => console.log('Created TA-standings channel.'))
                 .catch(console.error);
 
             channelManager.create('linking', {
                 topic: 'Linking trackmania logins with discord users - !link login [mention] - !unlink login',
                 parent: category
             })
-                .then(console.log('Created linking channel.'))
+                .then(_ => console.log('Created linking channel.'))
                 .catch(console.error);
         })
         .catch(console.error);
@@ -77,5 +77,6 @@ module.exports = {
     name: 'setup',
     description: 'Sets up the use of RPG Brawl bot on a server',
     execute,
-    syntax: '!setup'
+    syntax: '!setup',
+    channel: 'staff'
 }

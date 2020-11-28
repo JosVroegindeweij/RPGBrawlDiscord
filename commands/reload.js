@@ -19,5 +19,6 @@ module.exports = {
         message.reply('Reloaded all commands!').catch(console.error);
         console.log('Reloaded all commands');
     },
-    syntax: '!reload'
+    syntax: '!reload',
+    channel: 'staff'
 }

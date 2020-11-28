@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-let links = require('../player_discord_links.json')
+let links = require('../secrets/player_discord_links.json')
 
 function execute(message, args) {
     if (!args.length || args.length > 2) {
@@ -88,7 +88,7 @@ function unlink(message, args) {
 }
 
 function save_links() {
-    fs.writeFileSync('player_discord_links.json', JSON.stringify(links));
+    fs.writeFileSync('/secrets/player_discord_links.json', JSON.stringify(links));
     console.log('Saved links to JSON');
 }
 
@@ -105,5 +105,6 @@ module.exports = {
     execute,
     unlink,
     get_discord_id_by_login,
-    syntax: '!link login [mention]'
+    syntax: '!link login [mention]',
+    channel: 'linking'
 };

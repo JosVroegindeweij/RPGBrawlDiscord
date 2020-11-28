@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const {prefix, token} = require('./config.json');
-const get_qualified = require('./commands/getqualified')
+const {prefix, token} = require('./secrets/config.json');
 const fs = require('fs');
 
 client.once('ready', () => {
@@ -20,7 +19,9 @@ commandFiles.forEach(
     }
 );
 
-client.login(token);
+client.login(token)
+    .then(_ => console.log('Logged in'))
+    .catch(console.error);
 
 client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -36,6 +37,7 @@ client.on('message', message => {
         command.execute(message, args);
     } catch (error) {
         console.error(error);
-        message.reply('There was an error executing the command. Check the console for more info');
+        message.reply('There was an error executing the command. Check the console for more info')
+            .catch(console.error);
     }
 })

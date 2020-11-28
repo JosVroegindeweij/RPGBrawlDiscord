@@ -5,5 +5,6 @@ module.exports = {
     aliases: [],
     description: 'Unlink a previously linked login from a discord user',
     execute: unlink,
-    syntax: '!unlink login'
+    syntax: '!unlink login',
+    channel: 'linking'
 }
