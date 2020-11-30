@@ -101,5 +101,6 @@ module.exports = {
     execute,
     stop_scheduler,
     syntax: '{!getqualified | !update | !gq}',
-    channel: 'ta-standings'
+    channel: 'ta-standings',
+    admin: true
 }

@@ -98,5 +98,6 @@ module.exports = {
     unlink,
     get_discord_id_by_login,
     syntax: '!link login [mention]',
-    channel: 'linking'
+    channel: 'linking',
+    admin: false
 };

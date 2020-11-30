@@ -87,5 +87,6 @@ module.exports = {
     execute,
     findChannelId,
     syntax: '!setup',
-    channel: 'staff'
+    channel: 'staff',
+    admin: true
 }

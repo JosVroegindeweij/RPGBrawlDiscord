@@ -6,5 +6,6 @@ module.exports = {
     description: 'Stops automatic updating of qualified list',
     execute: stop_scheduler,
     syntax: '{!stop_getqualified | !stop_gq | !stopgq | !sgq}',
-    channel: 'ta-standings'
+    channel: 'ta-standings',
+    admin: true
 }

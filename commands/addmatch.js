@@ -6,5 +6,6 @@ module.exports = {
         message.channel.send('Hello world');
     },
     syntax: '!addmatch',
-    channel: 'staff'
+    channel: 'staff',
+    admin: true
 };

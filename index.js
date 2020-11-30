@@ -38,7 +38,7 @@ client.on('message', message => {
 
     // Admin permission check
     let isGlobalAdmin = message.member.permissions.any('ADMINISTRATOR');
-    if (command.channel === 'staff' && !(isGlobalAdmin || isAdmin(message.member))){
+    if (command.admin && !(isGlobalAdmin || isAdmin(message.member))){
         message.reply(`Only admins can use this command!`)
             .catch(console.error);
         return;

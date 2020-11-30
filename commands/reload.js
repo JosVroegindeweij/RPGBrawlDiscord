@@ -16,5 +16,6 @@ module.exports = {
         console.log('Reloaded all commands');
     },
     syntax: '!reload',
-    channel: 'staff'
+    channel: 'staff',
+    admin: true
 }

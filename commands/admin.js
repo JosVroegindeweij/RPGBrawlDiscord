@@ -47,5 +47,6 @@ module.exports = {
     execute,
     isAdmin,
     syntax: '!admin [{role|user}...]',
-    channel: 'staff'
+    channel: 'staff',
+    admin: true
 }
