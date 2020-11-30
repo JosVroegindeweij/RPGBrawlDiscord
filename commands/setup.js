@@ -2,7 +2,8 @@ const fs = require('fs');
 
 let channels = require('../secrets/channels.json');
 
-function execute(message) {let guild = message.guild;
+function execute(message) {
+    let guild = message.guild;
     let channelManager = guild.channels;
     let admin_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'staff');
     let everyone_role = guild.roles.everyone;
@@ -20,7 +21,8 @@ function execute(message) {let guild = message.guild;
             console.log('Created Bot channel category.')
             Promise.all([
                 channelManager.create('staff', {
-                    topic: 'Staff commands - !reload - !addmatch',
+                    topic: 'Staff commands' +
+                        buildTopic(message.client.commands, 'staff'),
                     parent: category,
                     permissionOverwrites: [
                         {
@@ -38,7 +40,8 @@ function execute(message) {let guild = message.guild;
                     ]
                 }),
                 channelManager.create('ta-standings', {
-                    topic: 'TA standings updates - !gq - !sgq',
+                    topic: 'TA standings updates' +
+                        buildTopic(message.client.commands, 'ta-standings'),
                     parent: category,
                     permissionOverwrites: [
                         {
@@ -56,7 +59,8 @@ function execute(message) {let guild = message.guild;
                     ]
                 }),
                 channelManager.create('linking', {
-                    topic: 'Linking trackmania logins with discord users - !link login [mention] - !unlink login',
+                    topic: 'Linking trackmania logins with discord users' +
+                        buildTopic(message.client.commands, 'linking'),
                     parent: category
                 })
             ])
@@ -79,6 +83,15 @@ function execute(message) {let guild = message.guild;
 
 function findChannelId(guild, channelName) {
     return channels[guild.id]['channels'][channelName];
+}
+
+function buildTopic(commands, channelName) {
+    let topic = ' -';
+    for (cmd of commands) {
+        if (cmd.channel === channelName) {
+            topic += ' ' + cmd.syntax + ' -';
+        }
+    }
 }
 
 module.exports = {
