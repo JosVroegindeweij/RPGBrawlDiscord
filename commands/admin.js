@@ -23,8 +23,6 @@ function execute(message) {
     save_admins();
 }
 
-
-
 function addAdmin(guild, adminId) {
     admins[guild.id] = admins[guild.id].filter(id => id !== adminId).concat([adminId]);
 }
@@ -32,6 +30,10 @@ function addAdmin(guild, adminId) {
 function save_admins(){
     fs.writeFileSync('secrets/admins.json', JSON.stringify(admins));
     console.log('Saved admins to JSON');
+}
+
+function getAdmins(guild) {
+    return admins[guild.id];
 }
 
 function isAdmin(guildMember){
@@ -53,6 +55,7 @@ module.exports = {
     execute,
     isAdmin,
     addAdmin,
+    getAdmins,
     syntax: '!admin [{role|user}...]',
     channel: 'staff',
     admin: true

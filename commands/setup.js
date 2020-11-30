@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const { addAdmin } = require('./admin');
+const { addAdmin, getAdmins } = require('./admin');
 let channels = require('../secrets/channels.json');
 
 function execute(message, args) {
@@ -19,14 +19,13 @@ function execute(message, args) {
         }
     }
 
-
     let guild = message.guild;
     let channelManager = guild.channels;
-    let admin_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'staff');
     let everyone_role = guild.roles.everyone;
     let bot_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'rpg brawl bot');
-    channels[guild.id] = channels[guild.id] || {};
+    let admins = getAdmins(guild);
 
+    channels[guild.id] = channels[guild.id] || {};
 
     channelManager.create('RPG Brawl bot', {
         type: 'category'
@@ -50,10 +49,10 @@ function execute(message, args) {
                             id: bot_role.id,
                             allow: ['VIEW_CHANNEL']
                         },
-                        {
-                            id: admin_role.id,
+                        ...admins.map(admin => ({
+                            id: admin.id,
                             allow: ['VIEW_CHANNEL']
-                        }
+                        }))
                     ]
                 }),
                 channelManager.create('ta-standings', {
@@ -69,10 +68,10 @@ function execute(message, args) {
                             id: bot_role.id,
                             allow: ['SEND_MESSAGES']
                         },
-                        {
-                            id: admin_role.id,
+                        ...admins.map(admin => ({
+                            id: admin.id,
                             allow: ['SEND_MESSAGES']
-                        }
+                        }))
                     ]
                 }),
                 channelManager.create('linking', {
