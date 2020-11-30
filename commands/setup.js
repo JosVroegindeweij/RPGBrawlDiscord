@@ -2,7 +2,14 @@ const fs = require('fs');
 
 let channels = require('../secrets/channels.json');
 
-function execute(message) {
+function execute(message, args) {
+    if (channels[message.guild.id] && !(args.includes('--force') || args.includes('-f'))) {
+        message.reply(`This server already has a bot category.`)
+            .catch(console.error);
+        return;
+    }
+
+
     let guild = message.guild;
     let channelManager = guild.channels;
     let admin_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'staff');
@@ -65,13 +72,13 @@ function execute(message) {
                 })
             ])
                 .then(values => {
-                channels[guild.id]['channels']['staff'] = values[0].id;
-                console.log('Created staff channel.');
-                channels[guild.id]['channels']['ta-standings'] = values[1].id;
-                console.log('Created TA-standings channel.');
-                channels[guild.id]['channels']['linking'] = values[2].id;
-                console.log('Created linking channel.');
-            })
+                    channels[guild.id]['channels']['staff'] = values[0].id;
+                    console.log('Created staff channel.');
+                    channels[guild.id]['channels']['ta-standings'] = values[1].id;
+                    console.log('Created TA-standings channel.');
+                    channels[guild.id]['channels']['linking'] = values[2].id;
+                    console.log('Created linking channel.');
+                })
                 .catch(console.error)
                 .finally(() => {
                     fs.writeFileSync('secrets/channels.json', JSON.stringify(channels));
@@ -99,7 +106,7 @@ module.exports = {
     description: 'Sets up the use of RPG Brawl bot on a server',
     execute,
     findChannelId,
-    syntax: '!setup',
+    syntax: '!setup [{-f|--force}]',
     channel: 'staff',
     admin: true
 }
