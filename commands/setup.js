@@ -2,13 +2,7 @@ const fs = require('fs');
 
 let channels = require('../secrets/channels.json');
 
-function execute(message) {
-    if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){
-        message.reply(`Only staff members can use this command!`);
-        return;
-    }
-
-    let guild = message.guild;
+function execute(message) {let guild = message.guild;
     let channelManager = guild.channels;
     let admin_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'staff');
     let everyone_role = guild.roles.everyone;
@@ -83,11 +77,15 @@ function execute(message) {
         .catch(console.error);
 }
 
+function findChannelId(guild, channelName) {
+    return channels[guild.id]['channels'][channelName];
+}
 
 module.exports = {
     name: 'setup',
     description: 'Sets up the use of RPG Brawl bot on a server',
     execute,
+    findChannelId,
     syntax: '!setup',
     channel: 'staff'
 }

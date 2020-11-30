@@ -10,10 +10,6 @@ function execute(message, args) {
     let login = args[0];
     let discord_user_id = message.author.id;
     if (args.length === 2) {
-        if (!message.member) {
-            message.reply(`You can't link other players in DM`).catch(console.error);
-            return;
-        }
         if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')) {
             message.reply(`You don't have permissions to link other players!`).catch(console.error);
             return;
@@ -65,10 +61,6 @@ function get_discord_id_by_login(login) {
 }
 
 function unlink(message, args) {
-    if (!message.member) {
-        message.reply(`You can't unlink players in DM`).catch(console.error);
-        return;
-    }
     if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')){
         message.reply(`Please let someone with permissions look at this, - ${message.guild.roles.cache.find(
             role => role.name === 'linker'
@@ -88,7 +80,7 @@ function unlink(message, args) {
 }
 
 function save_links() {
-    fs.writeFileSync('/secrets/player_discord_links.json', JSON.stringify(links));
+    fs.writeFileSync('secrets/player_discord_links.json', JSON.stringify(links));
     console.log('Saved links to JSON');
 }
 

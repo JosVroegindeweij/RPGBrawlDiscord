@@ -12,11 +12,6 @@ let client;
 let scheduledTask = {};
 
 function execute(message) {
-    if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){
-        message.reply(`Only staff members can use this command!`)
-            .catch(console.error);
-        return;
-    }
     if (!scheduledTask[message.channel.id]) {
         scheduledTask[message.channel.id] = setInterval(execute_requests.bind(message.channel), 600 * 1000);
     }
@@ -35,11 +30,6 @@ function execute_requests(channel) {
 }
 
 function stop_scheduler(message) {
-    if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){c
-        message.reply(`Only staff members can use this command!`)
-            .catch(console.error);
-        return;
-    }
     if (scheduledTask[message.channel.id]) {
         clearInterval(scheduledTask[message.channel.id]);
     }
@@ -110,6 +100,6 @@ module.exports = {
     description: 'Gets list of qualified players from spreadsheet and pastes them in the channel',
     execute,
     stop_scheduler,
-    syntax: '!getqualified / !update / !gq',
+    syntax: '{!getqualified | !update | !gq}',
     channel: 'ta-standings'
 }

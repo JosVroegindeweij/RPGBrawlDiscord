@@ -4,10 +4,6 @@ module.exports = {
     name: 'reload',
     description: 'Reloads all commands',
     execute(message) {
-        if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'staff')){
-            message.reply(`Only staff members can use this command!`).catch(console.error);
-            return;
-        }
         const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
         commandFiles.forEach(
             file => {

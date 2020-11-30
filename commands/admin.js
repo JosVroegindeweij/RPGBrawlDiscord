@@ -28,11 +28,24 @@ function save_admins(){
     console.log('Saved admins to JSON');
 }
 
+function isAdmin(guildMember){
+    let adminsInGuild = admins[guildMember.guild.id];
+    if (!adminsInGuild) {
+        return false;
+    }
+    for (id of adminsInGuild) {
+        if (guildMember.id === id || guildMember.roles.cache.has(id)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 module.exports = {
     name: 'admin',
     description: 'Gives admin permissions to a user or role.',
     execute,
+    isAdmin,
     syntax: '!admin [{role|user}...]',
     channel: 'staff'
 }
