@@ -11,16 +11,22 @@ function execute(message) {
     admins[guild.id] = admins[guild.id] || [];
 
     message.mentions.users.forEach(user => {
-        admins[guild.id] = admins[guild.id].filter(id => id !== user.id).concat([user.id]);
+        addAdmin(guild, user.id);
         message.reply(`Added user ${user} as admin`).catch(console.error);
     })
 
     message.mentions.roles.forEach(role => {
-        admins[guild.id] = admins[guild.id].filter(id => id !== role.id).concat([role.id]);
+        addAdmin(guild, role.id);
         message.reply(`Added role ${role} as admin`).catch(console.error);
     })
 
     save_admins();
+}
+
+
+
+function addAdmin(guild, adminId) {
+    admins[guild.id] = admins[guild.id].filter(id => id !== adminId).concat([adminId]);
 }
 
 function save_admins(){
@@ -46,6 +52,7 @@ module.exports = {
     description: 'Gives admin permissions to a user or role.',
     execute,
     isAdmin,
+    addAdmin,
     syntax: '!admin [{role|user}...]',
     channel: 'staff',
     admin: true

@@ -1,5 +1,6 @@
 const fs = require('fs');
 
+const { addAdmin } = require('./admin');
 let channels = require('../secrets/channels.json');
 
 function execute(message, args) {
@@ -7,6 +8,15 @@ function execute(message, args) {
         message.reply(`This server already has a bot category.`)
             .catch(console.error);
         return;
+    }
+
+    let indexOfAdd = Math.max(args.indexOf('-add'), args.indexOf('-a'));
+    if (indexOfAdd !== -1) {
+        for (arg of args.slice(indexOfAdd + 1)) {
+            if (arg?.id) {
+                addAdmin(message.guild, arg.id);
+            }
+        }
     }
 
 
@@ -106,7 +116,7 @@ module.exports = {
     description: 'Sets up the use of RPG Brawl bot on a server',
     execute,
     findChannelId,
-    syntax: '!setup [{-f|--force}]',
+    syntax: '!setup [{-f|--force}] [{-a|-add} {role|user}...]',
     channel: 'staff',
     admin: true
 }

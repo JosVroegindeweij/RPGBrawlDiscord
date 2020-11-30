@@ -97,7 +97,7 @@ module.exports = {
     execute,
     unlink,
     get_discord_id_by_login,
-    syntax: '!link login [mention]',
+    syntax: '!link login [{role|user}]',
     channel: 'linking',
     admin: false
 };
