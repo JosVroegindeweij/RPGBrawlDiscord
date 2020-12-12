@@ -13,7 +13,7 @@ let scheduledTask = {};
 
 function execute(message) {
     if (!scheduledTask[message.channel.id]) {
-        scheduledTask[message.channel.id] = setInterval(execute_requests.bind(null, message.channel), 6 * 1000);
+        scheduledTask[message.channel.id] = setInterval(execute_requests.bind(null, message.channel), 600 * 1000);
     }
     if (!client) {
         client = message.client;
@@ -81,7 +81,7 @@ function generateTable(channel) {
         } else {
             login = login[0];
         }
-        let char_regex = /[^A-Za-z_0-9]+/;
+        let char_regex = /^[A-Za-z _%/\\!@#$^&*()\-+=<>,.?:;"'{\[}\]|0-9]+;/;
         let escape_regex = /[%]/;
         login = login.replace(char_regex, '');
         let avg = (+(avgs[channel.id][index][0].replace(/,/, '.'))).toFixed(1);
