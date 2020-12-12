@@ -13,7 +13,7 @@ let scheduledTask = {};
 
 function execute(message) {
     if (!scheduledTask[message.channel.id]) {
-        scheduledTask[message.channel.id] = setInterval(execute_requests.bind(message.channel), 600 * 1000);
+        scheduledTask[message.channel.id] = setInterval(execute_requests.bind(null, message.channel), 6 * 1000);
     }
     if (!client) {
         client = message.client;
@@ -23,8 +23,6 @@ function execute(message) {
 }
 
 function execute_requests(channel) {
-    console.log('--------------------');
-    console.log(channel.id);
     call(getRange, [spreadsheetID, loginRange, saveLogins.bind(null, channel)]);
     call(getRange, [spreadsheetID, avgsRange, saveAvgs.bind(null, channel)]);
 }
@@ -56,8 +54,9 @@ function replyRange(channel) {
 
     table = Utils.insert(table, table.match(delimiter)[0], table.search(border));
 
-    if (latestRequest[channel.id]) {
-        latestRequest[channel.id].delete();
+    if (!latestRequest[channel.id].deleted) {
+        latestRequest[channel.id].delete()
+            .catch(console.error);
     }
     if (!response[channel.id]) {
         channel.send('```\n' + table + '```')

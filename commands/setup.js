@@ -97,9 +97,7 @@ function findChannelId(guild, channelName) {
 
 function buildTopic(commands, channelName) {
     let topic = ' -';
-    console.log(commands);
     for (cmd of commands) {
-        console.log(cmd);
         if (cmd[1].channel === channelName) {
             topic += ' ' + cmd[1].syntax + ' -';
         }
