@@ -24,7 +24,9 @@ function execute(message) {
 }
 
 function addAdmin(guild, adminId) {
+    admins[guild.id] = admins[guild.id] || [];
     admins[guild.id] = admins[guild.id].filter(id => id !== adminId).concat([adminId]);
+    save_admins();
 }
 
 function save_admins(){

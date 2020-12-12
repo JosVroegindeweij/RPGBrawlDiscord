@@ -10,16 +10,10 @@ function execute(message, args) {
         return;
     }
 
-    let indexOfAdd = Math.max(args.indexOf('-add'), args.indexOf('-a'));
-    if (indexOfAdd !== -1) {
-        for (arg of args.slice(indexOfAdd + 1)) {
-            if (arg?.id) {
-                addAdmin(message.guild, arg.id);
-            }
-        }
-    }
-
     let guild = message.guild;
+    message.mentions.users.forEach(user => addAdmin(guild, user.id));
+    message.mentions.roles.forEach(role => addAdmin(guild, role.id));
+
     let channelManager = guild.channels;
     let everyone_role = guild.roles.everyone;
     let bot_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'rpg brawl bot');
@@ -50,7 +44,7 @@ function execute(message, args) {
                             allow: ['VIEW_CHANNEL']
                         },
                         ...admins.map(admin => ({
-                            id: admin.id,
+                            id: admin,
                             allow: ['VIEW_CHANNEL']
                         }))
                     ]
@@ -69,7 +63,7 @@ function execute(message, args) {
                             allow: ['SEND_MESSAGES']
                         },
                         ...admins.map(admin => ({
-                            id: admin.id,
+                            id: admin,
                             allow: ['SEND_MESSAGES']
                         }))
                     ]
@@ -115,7 +109,7 @@ module.exports = {
     description: 'Sets up the use of RPG Brawl bot on a server',
     execute,
     findChannelId,
-    syntax: '!setup [{-f|--force}] [{-a|-add} {role|user}...]',
+    syntax: '!setup [{-f|--force}] [{role|user}...]',
     channel: 'staff',
     admin: true
 }

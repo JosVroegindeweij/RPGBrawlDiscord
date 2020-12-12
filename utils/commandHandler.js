@@ -1,5 +1,5 @@
 const fs = require('fs');
-
+const Discord = require('discord.js');
 const { isAdmin } = require('../commands/admin');
 const { findChannelId } = require('../commands/setup');
 const { prefix } = require('../secrets/config.json');
@@ -10,7 +10,7 @@ function initCommands(client) {
 
     commandFiles.forEach(
         file => {
-            const command = require(`./commands/${file}`);
+            const command = require(`../commands/${file}`);
             client.commands.set(command.name, command);
             console.log(`Command ${command.name} added`);
         }

@@ -11,9 +11,11 @@
   "license": "MIT",
   "dependencies": {
     "ascii-table": "0.0.9",
-    "discord.js": "^12.5.0",
+    "discord.js": "^12.5.1",
     "googleapis": "^39.2.0",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.20",
+    "node": "^15.3.0",
+    "nodejs": "0.0.0"
   },
   "devDependencies": {
     "lodash.bindall": "^4.4.0"
