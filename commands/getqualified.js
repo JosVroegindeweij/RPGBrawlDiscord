@@ -76,18 +76,8 @@ function generateTable(channel) {
     table.setBorder('|', '-', '+', '+');
     table.setHeading('Rank', 'player', 'avg');
     logins[channel.id].forEach((login_data, index) => {
-        console.log(login_data);
-        console.log(get_discord_id_by_login(login_data[0]));
         let user = channel.guild.members.cache.get(get_discord_id_by_login(login_data[0]));
-        let login;
-        console.log(user);
-        if (user) {
-            console.log(user.displayName);
-            login = user.displayName.replace(char_regex, '');
-            console.log(login);
-        }
-
-        login = login || login_data[0];
+        let login = user?.displayName.replace(char_regex, '') || login_data[0];
         let avg = (+(avgs[channel.id][index][0].replace(/,/, '.'))).toFixed(1);
         table.addRow(index + 1, login, avg);
     })
