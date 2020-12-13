@@ -71,18 +71,17 @@ function replyRange(channel) {
 }
 
 function generateTable(channel) {
+    let char_regex = /[^A-Za-z0-9 _%/\\!@#$^&*()\-+=<>,.?:;"'{\[}\]|]/g;
     let table = new AsciiTable('TA Rankings');
     table.setBorder('|', '-', '+', '+');
     table.setHeading('Rank', 'player', 'avg');
     logins[channel.id].forEach((login, index) => {
         let user = channel.guild.members.cache.get(get_discord_id_by_login(login));
         if (user) {
-            login = user.displayName;
+            login = user.displayName.replace(char_regex, '');
         } else {
             login = login[0];
         }
-        let char_regex = /[^A-Za-z0-9 _%/\\!@#$^&*()\-+=<>,.?:;"'{\[}\]|]/g;
-        login = login.replace(char_regex, '');
         let avg = (+(avgs[channel.id][index][0].replace(/,/, '.'))).toFixed(1);
         table.addRow(index + 1, login, avg);
     })
