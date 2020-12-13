@@ -81,9 +81,11 @@ function generateTable(channel) {
         } else {
             login = login[0];
         }
-        let char_regex = /^[A-Za-z _%/\\!@#$^&*()\-+=<>,.?:;"'{\[}\]|0-9]+;/;
-        let escape_regex = /[%]/;
+        let char_regex = /[^A-Za-z0-9 _%/\\!@#$^&*()\-+=<>,.?:;"'{\[}\]|]/g;
+        console.log(login);
+        console.log(login.match(char_regex));
         login = login.replace(char_regex, '');
+        console.log(login);
         let avg = (+(avgs[channel.id][index][0].replace(/,/, '.'))).toFixed(1);
         table.addRow(index + 1, login, avg);
     })
