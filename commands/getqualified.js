@@ -78,8 +78,9 @@ function generateTable(channel) {
     logins[channel.id].forEach((login_data, index) => {
         let user = channel.guild.members.cache.get(get_discord_id_by_login(login_data[0]));
         let login = user?.displayName.replace(char_regex, '') || login_data[0];
+        let displayName = login.length <= 23 ? login : login.slice(0, 22).concat('…');
         let avg = (+(avgs[channel.id][index][0].replace(/,/, '.'))).toFixed(1);
-        table.addRow(index + 1, login, avg);
+        table.addRow(index + 1, displayName, avg);
     })
     table.setAlign(0, AsciiTable.RIGHT);
     table.setAlign(1, AsciiTable.CENTER);
