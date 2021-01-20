@@ -2,6 +2,7 @@ const fs = require('fs');
 
 const { addAdmin, getAdmins } = require('./admin');
 let channels = require('../secrets/channels.json');
+const dbHandler = require("../utils/databaseHandler");
 
 function execute(message, args) {
     if (channels[message.guild.id] && !(args.includes('--force') || args.includes('-f'))) {
@@ -84,8 +85,14 @@ function execute(message, args) {
                 })
                 .catch(console.error)
                 .finally(() => {
-                    fs.writeFileSync('secrets/channels.json', JSON.stringify(channels));
-                    console.log('Saved channels to JSON');
+                    dbHandler.saveChannels(
+                        guild.id,
+                        channels[guild.id]['category'],
+                        channels[guild.id]['channels']['staff'],
+                        channels[guild.id]['channels']['ta-standings'],
+                        channels[guild.id]['channels']['linking']
+                    );
+                    console.log('Saved channels to database');
                 });
         })
         .catch(console.error);

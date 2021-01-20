@@ -13,6 +13,7 @@
     "ascii-table": "0.0.9",
     "discord.js": "^12.5.1",
     "googleapis": "^39.2.0",
+    "knex": "^0.21.16",
     "lodash": "^4.17.20",
     "mysql": "^2.18.1",
     "node": "^15.3.0",
