@@ -20,21 +20,27 @@ function execute(message) {
         message.reply(`Added role ${role} as admin`).catch(console.error);
     })
 
-    save_admins();
+    saveAdmins();
 }
 
 function addAdmin(guild, adminId) {
     admins[guild.id] = (admins[guild.id] || []).filter(id => id !== adminId).concat([adminId]);
-    save_admins();
+    saveAdmins();
 }
 
-function save_admins(){
+function saveAdmins(){
     fs.writeFileSync('secrets/admins.json', JSON.stringify(admins));
     console.log('Saved admins to JSON');
 }
 
 function getAdmins(guild) {
-    return admins[guild.id];
+    checkAdmins(guild);
+    return admins[guild.id] || [];
+}
+
+function checkAdmins(guild) {
+    admins[guild.id] = admins[guild.id].filter(role => guild.roles.cache.has(role));
+    saveAdmins();
 }
 
 function isAdmin(guildMember){

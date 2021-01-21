@@ -3,7 +3,7 @@ USE rpgbrawl_discord;
 
 CREATE TABLE `channel` (
     `guild` varchar(255) PRIMARY KEY,
-    `cat` varchar(255) NOT NULL,
+    `category` varchar(255) NOT NULL,
     `staff` varchar(255) NOT NULL,
     `ta_standings` varchar(255) NOT NULL,
     `linking` varchar(255) NOT NULL

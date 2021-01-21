@@ -1,4 +1,3 @@
-const mysql = require('mysql');
 const { db_host, db_username, db_password, db_name } = require('../secrets/config.json');
 const knex = require('knex')({
     client: 'mysql',
@@ -14,13 +13,15 @@ const knex = require('knex')({
 });
 
 function saveChannels(guild, category, staff, ta_standings, linking){
+    console.log('Saving channels to database');
     knex('channel').insert({
         guild: guild,
-        cat: category,
+        category: category,
         staff: staff,
         ta_standings: ta_standings,
-        linking:linking
+        linking: linking
     });
+    console.log('Saved channels to database');
 }
 
 module.exports = {
