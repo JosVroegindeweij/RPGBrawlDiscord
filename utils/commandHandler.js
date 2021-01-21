@@ -1,5 +1,7 @@
 const fs = require('fs');
 const Discord = require('discord.js');
+const Logger = require('./logger');
+
 const { isAdmin } = require('../commands/admin');
 const { findChannelId } = require('../commands/setup');
 const { prefix } = require('../secrets/config.json');
@@ -12,7 +14,7 @@ function initCommands(client) {
         file => {
             const command = require(`../commands/${file}`);
             client.commands.set(command.name, command);
-            console.log(`Command ${command.name} added`);
+            Logger.info(`Command ${command.name} added`, 'MAIN');
         }
     );
 }
@@ -31,7 +33,7 @@ function onMessage(client, message) {
     let isGlobalAdmin = message.member.permissions.any('ADMINISTRATOR');
     if (command.admin && !(isGlobalAdmin || isAdmin(message.member))){
         message.reply(`Only admins can use this command!`)
-            .catch(console.error);
+            .catch(reason => Logger.error(reason, message.guild));
         return;
     }
 
@@ -42,7 +44,7 @@ function onMessage(client, message) {
         let correctChannel = message.guild.channels.cache.get(correctChannelId);
         if (message.channel.id !== correctChannelId) {
             message.reply(`This command cannot be used in this channel. Use channel ${correctChannel} instead`)
-                .catch(console.error);
+                .catch(reason => Logger.error(reason, message.guild));
             return;
         }
     }
@@ -51,9 +53,9 @@ function onMessage(client, message) {
     try {
         command.execute(message, args);
     } catch (error) {
-        console.error(error);
+        Logger.error(error, message.guild);
         message.reply('There was an error executing the command. Check the console for more info')
-            .catch(console.error);
+            .catch(reason => Logger.error(reason, message.guild));
     }
 }
 

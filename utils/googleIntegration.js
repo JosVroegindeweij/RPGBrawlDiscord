@@ -1,4 +1,5 @@
 const fs = require('fs');
+const Logger = require('./logger');
 const readline = require('readline');
 const {google} = require('googleapis');
 
@@ -15,7 +16,7 @@ function call(func, args) {
         func = func.bind(null, arg);
     }
     fs.readFile('secrets/credentials.json', (err, content) => {
-        if (err) return console.log('Error loading client secret file:', err);
+        if (err) return Logger.error('Error loading client secret file:' + err, 'SPREADSHEETS');
         // Authorize a client with credentials, then call the Google Sheets API.
         // authorize(JSON.parse(content), listMajors);
         authorize(JSON.parse(content), func);
@@ -29,7 +30,7 @@ function getRange(spreadsheetId, range, callback, auth) {
         range: range
     }, (err, res) => {
         if (err) {
-            return console.log('The API returned an error: ' + err);
+            return Logger.error('The API returned an error: ' + err, 'SPREADSHEETS');
         }
         callback(res.data.values);
     })
@@ -73,12 +74,13 @@ function getNewToken(oAuth2Client, callback) {
     rl.question('Enter the code from that page here: ', (code) => {
         rl.close();
         oAuth2Client.getToken(code, (err, token) => {
-            if (err) return console.error('Error while trying to retrieve access token', err);
+            if (err)
+                return Logger.error('Error while trying to retrieve access token' + err, 'SPREADSHEETS');
             oAuth2Client.setCredentials(token);
             // Store the token to disk for later program executions
             fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-                if (err) return console.error(err);
-                console.log('Token stored to', TOKEN_PATH);
+                if (err) return Logger.error(err, 'SPREADSHEETS');
+                Logger.info('Token stored to' + TOKEN_PATH, 'SPREADSHEETS');
             });
             callback(oAuth2Client);
         });

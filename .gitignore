@@ -1,3 +1,4 @@
 /secrets/
 .idea/
 /node_modules/
+/logs/

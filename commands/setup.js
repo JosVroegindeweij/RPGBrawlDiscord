@@ -1,4 +1,5 @@
 const fs = require('fs');
+const Logger = require('../utils/logger');
 
 const { addAdmin, getAdmins } = require('./admin');
 let channels = require('../secrets/channels.json');
@@ -7,7 +8,13 @@ const dbHandler = require("../utils/databaseHandler");
 function execute(message, args) {
     if (channels[message.guild.id] && !(args.includes('--force') || args.includes('-f'))) {
         message.reply(`This server already has a bot category.`)
-            .catch(console.error);
+            .catch(reason => Logger.error(reason));
+        return;
+    }
+
+    if (dbHandler.existChannels(guild) && !(args.includes('--force') || args.includes('-f'))) {
+        message.reply(`This server already has a bot category.`)
+            .catch(reason => Logger.error(reason));
         return;
     }
 
@@ -20,16 +27,11 @@ function execute(message, args) {
     let bot_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'rpg brawl bot');
     let admins = getAdmins(guild);
 
-    channels[guild.id] = channels[guild.id] || {};
-
     channelManager.create('RPG Brawl bot', {
         type: 'category'
     })
         .then(category => {
-            // Add category to channels.json
-            channels[guild.id]['category'] = category.id;
-            channels[guild.id]['channels'] = {};
-            console.log('Created Bot channel category.')
+            Logger.info('Created Bot channel category.', guild)
             Promise.all([
                 channelManager.create('staff', {
                     topic: 'Staff commands' +
@@ -75,27 +77,22 @@ function execute(message, args) {
                     parent: category
                 })
             ])
-                .then(values => {
-                    channels[guild.id]['channels']['staff'] = values[0].id;
-                    console.log('Created staff channel.');
-                    channels[guild.id]['channels']['ta-standings'] = values[1].id;
-                    console.log('Created TA-standings channel.');
-                    channels[guild.id]['channels']['linking'] = values[2].id;
-                    console.log('Created linking channel.');
+                .then(channels => {
+                    Logger.info('Created bot channels.', guild);
+                    dbHandler.saveChannels(
+                        guild.id,
+                        category.id,
+                        channels[0].id,
+                        channels[1].id,
+                        channels[2].id
+                    );
                 })
                 .catch(console.error)
                 .finally(() => {
-                    dbHandler.saveChannels(
-                        guild.id,
-                        channels[guild.id]['category'],
-                        channels[guild.id]['channels']['staff'],
-                        channels[guild.id]['channels']['ta-standings'],
-                        channels[guild.id]['channels']['linking']
-                    );
-                    console.log('Saved channels to database');
+
                 });
         })
-        .catch(console.error);
+        .catch(reason => Logger.error(reason));
 }
 
 function findChannelId(guild, channelName) {

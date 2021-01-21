@@ -1,4 +1,5 @@
 const fs = require('fs');
+const Logger = require('./logger');
 
 let admins = require('../secrets/admins.json');
 
@@ -12,12 +13,14 @@ function execute(message) {
 
     message.mentions.users.forEach(user => {
         addAdmin(guild, user.id);
-        message.reply(`Added user ${user} as admin`).catch(console.error);
+        message.reply(`Added user ${user} as admin`)
+            .catch(reason => Logger.error(reason, guild));
     })
 
     message.mentions.roles.forEach(role => {
         addAdmin(guild, role.id);
-        message.reply(`Added role ${role} as admin`).catch(console.error);
+        message.reply(`Added role ${role} as admin`)
+            .catch(reason => Logger.error(reason, guild));
     })
 
     saveAdmins();
@@ -30,7 +33,7 @@ function addAdmin(guild, adminId) {
 
 function saveAdmins(){
     fs.writeFileSync('secrets/admins.json', JSON.stringify(admins));
-    console.log('Saved admins to JSON');
+    Logger.info('Saved admins to JSON', guild);
 }
 
 function getAdmins(guild) {

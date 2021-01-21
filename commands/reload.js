@@ -1,4 +1,5 @@
 const fs = require('fs');
+const Logger = require('../utils/logger');
 
 module.exports = {
     name: 'reload',
@@ -12,8 +13,9 @@ module.exports = {
                 message.client.commands.set(command.name, command);
             }
         );
-        message.reply('Reloaded all commands!').catch(console.error);
-        console.log('Reloaded all commands');
+        message.reply('Reloaded all commands!')
+            .catch(reason => Logger.error(reason));
+        Logger.info('Reloaded all commands', guild);
     },
     syntax: '!reload',
     channel: 'staff',

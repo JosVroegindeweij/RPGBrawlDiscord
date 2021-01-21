@@ -1,3 +1,5 @@
+const Logger = require('./logger');
+
 const { db_host, db_username, db_password, db_name } = require('../secrets/config.json');
 const knex = require('knex')({
     client: 'mysql',
@@ -13,17 +15,23 @@ const knex = require('knex')({
 });
 
 function saveChannels(guild, category, staff, ta_standings, linking){
-    console.log('Saving channels to database');
+    Logger.info('Saving channels to database', guild);
     knex('channel').insert({
         guild: guild,
         category: category,
         staff: staff,
         ta_standings: ta_standings,
         linking: linking
-    });
-    console.log('Saved channels to database');
+    })
+        .then(Logger.info('Saved channels to database', guild))
+        .catch(reason => Logger.error(reason, guild));
+}
+
+function existChannels(guild) {
+    Logger.info('Grabbing existing channel information from the database', guild);
 }
 
 module.exports = {
-    saveChannels
+    saveChannels,
+    existChannels
 }

@@ -1,4 +1,5 @@
 const Utils = require('../utils/utils');
+const Logger = require('../utils/logger');
 const {spreadsheetID, loginRange, avgsRange} = require('../secrets/config.json');
 const {call, getRange} = require('../utils/googleIntegration.js');
 const AsciiTable = require('ascii-table');
@@ -56,15 +57,15 @@ function replyRange(channel) {
 
     if (!latestRequest[channel.id].deleted) {
         latestRequest[channel.id].delete()
-            .catch(console.error);
+            .catch(reason => Logger.error(reason, guild));
     }
     if (!response[channel.id]) {
         channel.send('```\n' + table + '```')
             .then(message => response[channel.id] = message)
-            .catch(console.error);
+            .catch(reason => Logger.error(reason, guild));
     } else {
         response[channel.id].edit('```\n' + table + '```')
-            .catch(console.error);
+            .catch(reason => Logger.error(reason, guild));
     }
     logins[channel.id] = [];
     avgs[channel.id] = [];

@@ -1,4 +1,5 @@
 const fs = require('fs');
+const Logger = require('../utils/logger');
 
 let links = require('../secrets/player_discord_links.json')
 
@@ -11,7 +12,8 @@ function execute(message, args) {
     let discord_user_id = message.author.id;
     if (args.length === 2) {
         if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')) {
-            message.reply(`You don't have permissions to link other players!`).catch(console.error);
+            message.reply(`You don't have permissions to link other players!`)
+                .catch(reason => Logger.error(reason, guild));
             return;
         }
         let id = getIdFromMention(args[1]);
@@ -19,7 +21,7 @@ function execute(message, args) {
             discord_user_id = id;
         } else {
             message.reply('You entered a second argument, but it is not a mention. Please try again!')
-                .catch(console.error);
+                .catch(reason => Logger.error(reason, guild));
             return;
         }
     }
@@ -40,9 +42,10 @@ function execute(message, args) {
         })
             .then(role => {
                 add_user_to_role(message, args[0], user, role);
-                console.log(`Linked login '${login}' to discord username '${user.username}#${user.tag}'`);
+                Logger.info(`Linked login '${login}' to 
+                discord username '${user.username}#${user.tag}'`, guild);
             })
-            .catch(console.error);
+            .catch(reason => Logger.error(reason, guild));
     } else {
         add_user_to_role(message, args[0], user, linked_role);
     }
@@ -64,24 +67,27 @@ function unlink(message, args) {
     if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')){
         message.reply(`Please let someone with permissions look at this, - ${message.guild.roles.cache.find(
             role => role.name === 'linker'
-        )} -`).catch(console.error);
+        )} -`)
+            .catch(reason => Logger.error(reason, guild));
         return;
     }
 
     if (!args.length) {
-        message.reply(`You forgot to add a login to unlink!`).catch(console.error);
+        message.reply(`You forgot to add a login to unlink!`)
+            .catch(reason => Logger.error(reason, guild));
         return;
 
     }
     delete links[args[0]];
-    message.reply(`Unlinked login '${args[0]}'`).catch(console.error);
-    console.log(`Unlinked login '${args[0]}'`);
+    message.reply(`Unlinked login '${args[0]}'`)
+        .catch(reason => Logger.error(reason, guild));
+    Logger.info(`Unlinked login '${args[0]}'`, guild);
     save_links();
 }
 
 function save_links() {
     fs.writeFileSync('secrets/player_discord_links.json', JSON.stringify(links));
-    console.log('Saved links to JSON');
+    Logger.info('Saved links to JSON', guild);
 }
 
 function getIdFromMention(mention) {

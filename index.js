@@ -1,16 +1,17 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const {token} = require('./secrets/config.json');
+const Logger = require('./utils/logger');
 
 const { initCommands, onMessage } = require('./utils/commandHandler');
 
 client.once('ready', () => {
-    console.log('Bot launched!');
+    Logger.info('Bot launched!');
 });
 
 client.login(token)
-    .then(_ => console.log('Logged in'))
-    .catch(console.error);
+    .then(_ => Logger.info('Logged in'))
+    .catch(reason => Logger.error(reason));
 
 initCommands(client);
 
