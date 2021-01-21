@@ -39,7 +39,8 @@ function getAdmins(guild) {
 }
 
 function checkAdmins(guild) {
-    admins[guild.id] = admins[guild.id].filter(role => guild.roles.cache.has(role));
+    admins[guild.id] = admins[guild.id].filter(mention =>
+        guild.roles.cache.has(mention) || guild.members.cache.has(mention));
     saveAdmins();
 }
 
