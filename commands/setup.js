@@ -1,9 +1,8 @@
-const fs = require('fs');
 const Logger = require('../utils/logger');
 
-const { addAdmin, getAdmins } = require('./admin');
-let channels = require('../secrets/channels.json');
 const dbHandler = require("../utils/databaseHandler");
+const Admin = require('./admin');
+let channels = require('../secrets/channels.json');
 
 function execute(message, args) {
     if (channels[message.guild.id] && !(args.includes('--force') || args.includes('-f'))) {
@@ -19,13 +18,13 @@ function execute(message, args) {
     }
 
     let guild = message.guild;
-    message.mentions.users.forEach(user => addAdmin(guild, user.id));
-    message.mentions.roles.forEach(role => addAdmin(guild, role.id));
+    message.mentions.users.forEach(user => Admin.addAdmin(guild, user.id));
+    message.mentions.roles.forEach(role => Admin.addAdmin(guild, role.id));
 
     let channelManager = guild.channels;
     let everyone_role = guild.roles.everyone;
     let bot_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'rpg brawl bot');
-    let admins = getAdmins(guild);
+    let admins = Admin.getAdmins(guild);
 
     channelManager.create('RPG Brawl bot', {
         type: 'category'

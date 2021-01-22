@@ -1,7 +1,9 @@
 const fs = require('fs');
-const Logger = require('./logger');
 const readline = require('readline');
+
 const {google} = require('googleapis');
+
+const Logger = require('./logger');
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];

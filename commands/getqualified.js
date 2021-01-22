@@ -1,9 +1,11 @@
+const AsciiTable = require('ascii-table');
+
 const Utils = require('../utils/utils');
 const Logger = require('../utils/logger');
+const GoogleIntegration = require('../utils/googleIntegration.js');
+const Link = require('./link.js');
+
 const {spreadsheetID, loginRange, avgsRange} = require('../secrets/config.json');
-const {call, getRange} = require('../utils/googleIntegration.js');
-const AsciiTable = require('ascii-table');
-const { get_discord_id_by_login } = require('./link.js');
 
 let response = {};
 let latestRequest = {};
@@ -24,8 +26,8 @@ function execute(message) {
 }
 
 function execute_requests(channel) {
-    call(getRange, [spreadsheetID, loginRange, saveLogins.bind(null, channel)]);
-    call(getRange, [spreadsheetID, avgsRange, saveAvgs.bind(null, channel)]);
+    GoogleIntegration.call(GoogleIntegration.getRange, [spreadsheetID, loginRange, saveLogins.bind(null, channel)]);
+    GoogleIntegration.call(GoogleIntegration.getRange, [spreadsheetID, avgsRange, saveAvgs.bind(null, channel)]);
 }
 
 function stop_scheduler(message) {
@@ -77,7 +79,7 @@ function generateTable(channel) {
     table.setBorder('|', '-', '+', '+');
     table.setHeading('Rank', 'player', 'avg');
     logins[channel.id].forEach((login_data, index) => {
-        let user = channel.guild.members.cache.get(get_discord_id_by_login(login_data[0]));
+        let user = channel.guild.members.cache.get(Link.get_discord_id_by_login(login_data[0]));
         let login = user?.displayName.replace(char_regex, '') || login_data[0];
         let displayName = login.length <= 23 ? login : login.slice(0, 22).concat('…');
         let avg = (+(avgs[channel.id][index][0].replace(/,/, '.'))).toFixed(1);

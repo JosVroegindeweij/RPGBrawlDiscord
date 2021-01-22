@@ -1,6 +1,6 @@
 const fs = require('fs');
-const Logger = require('../utils/logger');
 
+const Logger = require('../utils/logger');
 let links = require('../secrets/player_discord_links.json')
 
 function execute(message, args) {

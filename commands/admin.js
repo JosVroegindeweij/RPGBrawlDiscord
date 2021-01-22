@@ -1,6 +1,6 @@
 const fs = require('fs');
-const Logger = require('../utils/logger');
 
+const Logger = require('../utils/logger');
 let admins = require('../secrets/admins.json');
 
 function execute(message) {

@@ -1,6 +1,3 @@
-const Logger = require('./logger');
-
-const { db_host, db_username, db_password, db_name } = require('../secrets/config.json');
 const knex = require('knex')({
     client: 'mysql',
     version: '5.7',
@@ -13,6 +10,10 @@ const knex = require('knex')({
     debug: true,
     asyncStackTraces: true
 });
+
+const Logger = require('./logger');
+
+const { db_host, db_username, db_password, db_name } = require('../secrets/config.json');
 
 function saveChannels(guild, category, staff, ta_standings, linking){
     Logger.info('Saving channels to database', guild);

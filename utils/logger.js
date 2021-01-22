@@ -1,6 +1,6 @@
 const fs = require('fs');
-const Utils = require('./utils');
 
+const Utils = require('./utils');
 
 let Logger = {}
 let infoStream = fs.createWriteStream("logs/info.txt", {flags: 'a'});

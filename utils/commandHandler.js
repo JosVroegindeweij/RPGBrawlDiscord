@@ -1,9 +1,12 @@
 const fs = require('fs');
+
 const Discord = require('discord.js');
+
 const Logger = require('./logger');
 
-const { isAdmin } = require('../commands/admin');
-const { findChannelId } = require('../commands/setup');
+const Admin = require('../commands/admin');
+const Setup = require('../commands/setup');
+
 const { prefix } = require('../secrets/config.json');
 
 function initCommands(client) {
@@ -31,7 +34,7 @@ function onMessage(client, message) {
 
     // Admin permission check
     let isGlobalAdmin = message.member.permissions.any('ADMINISTRATOR');
-    if (command.admin && !(isGlobalAdmin || isAdmin(message.member))){
+    if (command.admin && !(isGlobalAdmin || Admin.isAdmin(message.member))){
         message.reply(`Only admins can use this command!`)
             .catch(reason => Logger.error(reason, message.guild));
         return;
@@ -40,7 +43,7 @@ function onMessage(client, message) {
     // Channel permission check - can only occur after the setup command has been run,
     // so setup should be independent of this
     if (command.name !== 'setup') {
-        let correctChannelId = findChannelId(message.guild, command.channel);
+        let correctChannelId = Setup.findChannelId(message.guild, command.channel);
         let correctChannel = message.guild.channels.cache.get(correctChannelId);
         if (message.channel.id !== correctChannelId) {
             message.reply(`This command cannot be used in this channel. Use channel ${correctChannel} instead`)
