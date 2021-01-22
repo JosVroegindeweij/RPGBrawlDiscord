@@ -17,11 +17,11 @@ const knex = require('knex')({
 function saveChannels(guild, category, staff, ta_standings, linking){
     Logger.info('Saving channels to database', guild);
     knex('channel').insert({
-        guild: guild,
-        category: category,
-        staff: staff,
-        ta_standings: ta_standings,
-        linking: linking
+        guild: guild.id,
+        category: category.id,
+        staff: staff.id,
+        ta_standings: ta_standings.id,
+        linking: linking.id
     })
         .then(Logger.info('Saved channels to database', guild))
         .catch(reason => Logger.error(reason, guild));

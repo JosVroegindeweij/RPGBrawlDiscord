@@ -8,13 +8,13 @@ const dbHandler = require("../utils/databaseHandler");
 function execute(message, args) {
     if (channels[message.guild.id] && !(args.includes('--force') || args.includes('-f'))) {
         message.reply(`This server already has a bot category.`)
-            .catch(reason => Logger.error(reason));
+            .catch(reason => Logger.error(reason, message.guild));
         return;
     }
 
-    if (dbHandler.existChannels(guild) && !(args.includes('--force') || args.includes('-f'))) {
+    if (dbHandler.existChannels(message.guild) && !(args.includes('--force') || args.includes('-f'))) {
         message.reply(`This server already has a bot category.`)
-            .catch(reason => Logger.error(reason));
+            .catch(reason => Logger.error(reason, message.guild));
         return;
     }
 
@@ -80,19 +80,19 @@ function execute(message, args) {
                 .then(channels => {
                     Logger.info('Created bot channels.', guild);
                     dbHandler.saveChannels(
-                        guild.id,
-                        category.id,
-                        channels[0].id,
-                        channels[1].id,
-                        channels[2].id
+                        guild,
+                        category,
+                        channels[0],
+                        channels[1],
+                        channels[2]
                     );
                 })
-                .catch(console.error)
+                .catch(reason => Logger.error(reason, message.guild))
                 .finally(() => {
 
                 });
         })
-        .catch(reason => Logger.error(reason));
+        .catch(reason => Logger.error(reason, message.guild));
 }
 
 function findChannelId(guild, channelName) {

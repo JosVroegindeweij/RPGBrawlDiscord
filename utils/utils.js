@@ -8,15 +8,18 @@ function insert(original, str, index) {
 
 function timestamp() {
     let dateObj = new Date();
-    let date = ("0" + dateObj.getDate()).slice(-2);
-    let month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+    let date = lpad(dateObj.getDate(), 2);
+    let month = lpad(dateObj.getMonth() + 1, 2);
     let year = dateObj.getFullYear();
-    let hours = dateObj.getHours();
-    let minutes = dateObj.getMinutes();
-    let seconds = dateObj.getSeconds();
-    let ms = dateObj.getMilliseconds();
-
+    let hours = lpad(dateObj.getHours(), 2);
+    let minutes = lpad(dateObj.getMinutes(), 2);
+    let seconds = lpad(dateObj.getSeconds(), 2);
+    let ms = lpad(dateObj.getMilliseconds(), 3);
     return `[${year}-${month}-${date} ${hours}:${minutes}:${seconds}:${ms}]`;
+}
+
+function lpad(value, significance) {
+    return ('0'.repeat(significance) + value).slice(-significance);
 }
 
 module.exports = {

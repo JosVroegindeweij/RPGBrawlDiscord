@@ -54,7 +54,7 @@ function onMessage(client, message) {
         command.execute(message, args);
     } catch (error) {
         Logger.error(error, message.guild);
-        message.reply('There was an error executing the command. Check the console for more info')
+        message.reply('There was an error executing the command. Check the logs for more info')
             .catch(reason => Logger.error(reason, message.guild));
     }
 }

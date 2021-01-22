@@ -57,15 +57,15 @@ function replyRange(channel) {
 
     if (!latestRequest[channel.id].deleted) {
         latestRequest[channel.id].delete()
-            .catch(reason => Logger.error(reason, guild));
+            .catch(reason => Logger.error(reason, channel.guild));
     }
     if (!response[channel.id]) {
         channel.send('```\n' + table + '```')
             .then(message => response[channel.id] = message)
-            .catch(reason => Logger.error(reason, guild));
+            .catch(reason => Logger.error(reason, channel.guild));
     } else {
         response[channel.id].edit('```\n' + table + '```')
-            .catch(reason => Logger.error(reason, guild));
+            .catch(reason => Logger.error(reason, channel.guild));
     }
     logins[channel.id] = [];
     avgs[channel.id] = [];

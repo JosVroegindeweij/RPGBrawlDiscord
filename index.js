@@ -6,12 +6,12 @@ const Logger = require('./utils/logger');
 const { initCommands, onMessage } = require('./utils/commandHandler');
 
 client.once('ready', () => {
-    Logger.info('Bot launched!');
+    Logger.info('Bot launched!', 'MAIN');
 });
 
 client.login(token)
-    .then(_ => Logger.info('Logged in'))
-    .catch(reason => Logger.error(reason));
+    .then(_ => Logger.info('Logged in', 'MAIN'))
+    .catch(reason => Logger.error(reason, 'MAIN'));
 
 initCommands(client);
 

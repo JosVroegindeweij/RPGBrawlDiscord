@@ -1,5 +1,5 @@
 const fs = require('fs');
-const Logger = require('./logger');
+const Logger = require('../utils/logger');
 
 let admins = require('../secrets/admins.json');
 
@@ -23,15 +23,15 @@ function execute(message) {
             .catch(reason => Logger.error(reason, guild));
     })
 
-    saveAdmins();
+    saveAdmins(guild);
 }
 
 function addAdmin(guild, adminId) {
     admins[guild.id] = (admins[guild.id] || []).filter(id => id !== adminId).concat([adminId]);
-    saveAdmins();
+    saveAdmins(guild);
 }
 
-function saveAdmins(){
+function saveAdmins(guild){
     fs.writeFileSync('secrets/admins.json', JSON.stringify(admins));
     Logger.info('Saved admins to JSON', guild);
 }
@@ -44,7 +44,7 @@ function getAdmins(guild) {
 function checkAdmins(guild) {
     admins[guild.id] = admins[guild.id].filter(mention =>
         guild.roles.cache.has(mention) || guild.members.cache.has(mention));
-    saveAdmins();
+    saveAdmins(guild);
 }
 
 function isAdmin(guildMember){

@@ -13,7 +13,7 @@ function execute(message, args) {
     if (args.length === 2) {
         if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')) {
             message.reply(`You don't have permissions to link other players!`)
-                .catch(reason => Logger.error(reason, guild));
+                .catch(reason => Logger.error(reason, message.guild));
             return;
         }
         let id = getIdFromMention(args[1]);
@@ -21,13 +21,13 @@ function execute(message, args) {
             discord_user_id = id;
         } else {
             message.reply('You entered a second argument, but it is not a mention. Please try again!')
-                .catch(reason => Logger.error(reason, guild));
+                .catch(reason => Logger.error(reason, message.guild));
             return;
         }
     }
     links[login] = discord_user_id;
 
-    save_links();
+    save_links(message.guild);
 
     let linked_role = message.guild.roles.cache.find(r => r.name.toLowerCase() === 'linked');
     let user = message.guild.members.cache.get(discord_user_id);
@@ -43,9 +43,9 @@ function execute(message, args) {
             .then(role => {
                 add_user_to_role(message, args[0], user, role);
                 Logger.info(`Linked login '${login}' to 
-                discord username '${user.username}#${user.tag}'`, guild);
+                discord username '${user.username}#${user.tag}'`, message.guild);
             })
-            .catch(reason => Logger.error(reason, guild));
+            .catch(reason => Logger.error(reason, message.guild));
     } else {
         add_user_to_role(message, args[0], user, linked_role);
     }
@@ -55,8 +55,10 @@ function execute(message, args) {
 function add_user_to_role(message, login, user, role) {
     user.roles.add(role)
         .then(_ => {
-            message.reply(`Linked login '${login}' with user ${user}`).catch(console.error)
-        }).catch(console.error)
+            message.reply(`Linked login '${login}' with user ${user}`)
+                .catch(reason => Logger.error(reason, message.guild));
+        })
+        .catch(reason => Logger.error(reason, message.guild));
 }
 
 function get_discord_id_by_login(login) {
@@ -68,24 +70,24 @@ function unlink(message, args) {
         message.reply(`Please let someone with permissions look at this, - ${message.guild.roles.cache.find(
             role => role.name === 'linker'
         )} -`)
-            .catch(reason => Logger.error(reason, guild));
+            .catch(reason => Logger.error(reason, message.guild));
         return;
     }
 
     if (!args.length) {
         message.reply(`You forgot to add a login to unlink!`)
-            .catch(reason => Logger.error(reason, guild));
+            .catch(reason => Logger.error(reason, message.guild));
         return;
 
     }
     delete links[args[0]];
     message.reply(`Unlinked login '${args[0]}'`)
-        .catch(reason => Logger.error(reason, guild));
-    Logger.info(`Unlinked login '${args[0]}'`, guild);
-    save_links();
+        .catch(reason => Logger.error(reason, message.guild));
+    Logger.info(`Unlinked login '${args[0]}'`, message.guild);
+    save_links(message.guild);
 }
 
-function save_links() {
+function save_links(guild) {
     fs.writeFileSync('secrets/player_discord_links.json', JSON.stringify(links));
     Logger.info('Saved links to JSON', guild);
 }

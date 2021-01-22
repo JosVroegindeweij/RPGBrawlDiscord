@@ -14,8 +14,8 @@ module.exports = {
             }
         );
         message.reply('Reloaded all commands!')
-            .catch(reason => Logger.error(reason));
-        Logger.info('Reloaded all commands', guild);
+            .catch(reason => Logger.error(reason, message.guild));
+        Logger.info('Reloaded all commands', message.guild);
     },
     syntax: '!reload',
     channel: 'staff',
