@@ -8,12 +8,12 @@ const {token} = require('./secrets/config.json');
 const client = new Discord.Client();
 
 client.once('ready', () => {
-    Logger.info('Bot launched!', 'MAIN');
+    Logger.info('Bot launched!', 'main');
 });
 
 client.login(token)
-    .then(_ => Logger.info('Logged in', 'MAIN'))
-    .catch(reason => Logger.error(reason, 'MAIN'));
+    .then(_ => Logger.info('Logged in', 'main'))
+    .catch(reason => Logger.error(reason, 'main'));
 
 cmdHandler.initCommands(client);
 

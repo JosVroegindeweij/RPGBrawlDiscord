@@ -1,5 +1,5 @@
 {
-  "name": "RPG-Brawl-Discord-Bot",
+  "name": "rpg_brawl_discord_bot",
   "version": "1.0.0",
   "description": "Manages the administrative part of the RPG Brawl tournament.",
   "main": "index.js",
@@ -18,8 +18,5 @@
     "mysql": "^2.18.1",
     "node": "^15.3.0",
     "nodejs": "0.0.0"
-  },
-  "devDependencies": {
-    "lodash.bindall": "^4.4.0"
   }
 }

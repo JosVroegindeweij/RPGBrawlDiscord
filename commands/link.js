@@ -1,38 +1,32 @@
-const fs = require('fs');
-
 const Logger = require('../utils/logger');
-let links = require('../secrets/player_discord_links.json')
+const dbHandler = require('../utils/databaseHandler');
 
-function execute(message, args) {
+async function execute(message, args) {
     if (!args.length || args.length > 2) {
         return message.channel.send(`${message.author}, correct syntax: !link login [mention]`);
     }
 
     let login = args[0];
-    let discord_user_id = message.author.id;
+    let member = message.member;
     if (args.length === 2) {
         if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')) {
             message.reply(`You don't have permissions to link other players!`)
                 .catch(reason => Logger.error(reason, message.guild));
             return;
         }
-        let id = getIdFromMention(args[1]);
-        if (id) {
-            discord_user_id = id;
+        if (message.mentions.members.size) {
+            member = message.mentions.members.first();
         } else {
             message.reply('You entered a second argument, but it is not a mention. Please try again!')
                 .catch(reason => Logger.error(reason, message.guild));
             return;
         }
     }
-    links[login] = discord_user_id;
+    dbHandler.addPlayerLink(message.guild, login, member);
 
-    save_links(message.guild);
+    let linkedRole = message.guild.roles.cache.find(r => r.name.toLowerCase() === 'linked');
 
-    let linked_role = message.guild.roles.cache.find(r => r.name.toLowerCase() === 'linked');
-    let user = message.guild.members.cache.get(discord_user_id);
-
-    if (!linked_role) {
+    if (!linkedRole) {
         message.guild.roles.create({
             data: {
                 name: 'linked',
@@ -41,32 +35,23 @@ function execute(message, args) {
             }
         })
             .then(role => {
-                add_user_to_role(message, args[0], user, role);
-                Logger.info(`Linked login '${login}' to 
-                discord username '${user.username}#${user.tag}'`, message.guild);
+                addUserToRole(message, login, member, role);
             })
             .catch(reason => Logger.error(reason, message.guild));
     } else {
-        add_user_to_role(message, args[0], user, linked_role);
+        addUserToRole(message, login, member, linkedRole);
     }
-
-}
-
-function add_user_to_role(message, login, user, role) {
-    user.roles.add(role)
-        .then(_ => {
-            message.reply(`Linked login '${login}' with user ${user}`)
-                .catch(reason => Logger.error(reason, message.guild));
-        })
+    message.reply(`Login '${login}' is linked to user ${member}`)
         .catch(reason => Logger.error(reason, message.guild));
 }
 
-function get_discord_id_by_login(login) {
-    return links[login];
+function addUserToRole(message, login, member, role) {
+    member.roles.add(role)
+        .catch(reason => Logger.error(reason, message.guild));
 }
 
 function unlink(message, args) {
-    if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')){
+    if (!message.member.roles.cache.find(r => r.name.toLowerCase() === 'linker')) {
         message.reply(`Please let someone with permissions look at this, - ${message.guild.roles.cache.find(
             role => role.name === 'linker'
         )} -`)
@@ -75,27 +60,46 @@ function unlink(message, args) {
     }
 
     if (!args.length) {
-        message.reply(`You forgot to add a login to unlink!`)
+        message.reply(`You forgot to add a login/mention to unlink!`)
             .catch(reason => Logger.error(reason, message.guild));
         return;
-
     }
-    delete links[args[0]];
-    message.reply(`Unlinked login '${args[0]}'`)
-        .catch(reason => Logger.error(reason, message.guild));
-    Logger.info(`Unlinked login '${args[0]}'`, message.guild);
-    save_links(message.guild);
-}
 
-function save_links(guild) {
-    fs.writeFileSync('secrets/player_discord_links.json', JSON.stringify(links));
-    Logger.info('Saved links to JSON', guild);
-}
+    console.log('Hello');
+    console.log(args);
 
-function getIdFromMention(mention) {
-    const matches = mention.match(/^<@!?(\d+)>$/);
-    if (!matches) return;
-    return matches[1];
+    if (message.mentions.members.size) {
+        let member = message.mentions.members.first();
+        dbHandler.removePlayerLink(message.guild, {id: member.id})
+            .then(rows => {
+                if (rows === 0) {
+                    message.reply(`This user was not linked`)
+                        .catch(reason => Logger.error(reason, message.guild));
+                    Logger.info(`Tried to unlink non-linked user '${member.user.username}#${member.user.tag}'`,
+                        message.guild);
+                } else {
+                    message.reply(`Unlinked user ${member}`)
+                        .catch(reason => Logger.error(reason, message.guild));
+                    Logger.info(`Unlinked user '${member.user.username}#${member.user.tag}'`, message.guild);
+                }
+            })
+            .catch(reason => Logger.error(reason, message.guild));
+    } else {
+        let login = args[0]
+        dbHandler.removePlayerLink(message.guild, {login: login})
+            .then(rows => {
+                if (rows === 0) {
+                    message.reply(`This login was not linked`)
+                        .catch(reason => Logger.error(reason, message.guild));
+                    Logger.info(`Tried to unlink non-linked login '${login}'`);
+                } else {
+                    message.reply(`Unlinked login ${login}`)
+                        .catch(reason => Logger.error(reason, message.guild));
+                    Logger.info(`Unlinked login '${login}'`);
+                }
+            })
+            .catch(reason => Logger.error(reason, message.guild));
+    }
 }
 
 module.exports = {
@@ -104,7 +108,6 @@ module.exports = {
     description: 'Links a trackmania login to a discord user.',
     execute,
     unlink,
-    get_discord_id_by_login,
     syntax: '!link login [{role|user}]',
     channel: 'linking',
     admin: false

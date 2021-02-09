@@ -1,63 +1,57 @@
-const fs = require('fs');
-
 const Logger = require('../utils/logger');
-let admins = require('../secrets/admins.json');
+const dbHandler = require('../utils/databaseHandler');
 
 function execute(message) {
-    if (!message.mentions.users.size && !message.mentions.roles.size) {
+    if (!message.mentions.members.size && !message.mentions.roles.size) {
         return message.channel.send(`${message.author}, correct syntax: !admin [{role|user}...]`);
     }
 
     let guild = message.guild;
-    admins[guild.id] = admins[guild.id] || [];
+    addAdmins(message);
 
-    message.mentions.users.forEach(user => {
-        addAdmin(guild, user.id);
-        message.reply(`Added user ${user} as admin`)
-            .catch(reason => Logger.error(reason, guild));
-    })
+    dbHandler.getChannels(guild)
+        .then(channels => {
+            let staff = guild.channels.cache.get(channels['staff']);
+            let ta = guild.channels.cache.get(channels['ta_standings']);
+            message.mentions.users.forEach(user => {
+                staff?.updateOverwrite(user, {
+                    'VIEW_CHANNEL': true,
+                    'SEND_MESSAGES': true
+                });
+                ta?.updateOverwrite(user, {
+                    'SEND_MESSAGES': true
+                })
+            });
+            message.mentions.roles.forEach(role => {
+                staff?.updateOverwrite(role, {
+                    'VIEW_CHANNEL': true,
+                    'SEND_MESSAGES': true
+                });
+                ta?.updateOverwrite(role, {
+                    'SEND_MESSAGES': true
+                });
+            });
+        });
+}
+
+function addAdmins(message) {
+    message.mentions.members.forEach(member => {
+        dbHandler.addAdmin(message.guild, 'user', member);
+        message.reply(`Added user ${member} as admin`)
+            .catch(reason => Logger.error(reason, message.guild));
+    });
 
     message.mentions.roles.forEach(role => {
-        addAdmin(guild, role.id);
+        dbHandler.addAdmin(message.guild, 'role', role);
         message.reply(`Added role ${role} as admin`)
-            .catch(reason => Logger.error(reason, guild));
-    })
-
-    saveAdmins(guild);
+            .catch(reason => Logger.error(reason, message.guild));
+    });
 }
 
-function addAdmin(guild, adminId) {
-    admins[guild.id] = (admins[guild.id] || []).filter(id => id !== adminId).concat([adminId]);
-    saveAdmins(guild);
-}
-
-function saveAdmins(guild){
-    fs.writeFileSync('secrets/admins.json', JSON.stringify(admins));
-    Logger.info('Saved admins to JSON', guild);
-}
-
-function getAdmins(guild) {
-    checkAdmins(guild);
-    return admins[guild.id] || [];
-}
-
-function checkAdmins(guild) {
-    admins[guild.id] = admins[guild.id].filter(mention =>
-        guild.roles.cache.has(mention) || guild.members.cache.has(mention));
-    saveAdmins(guild);
-}
-
-function isAdmin(guildMember){
-    let adminsInGuild = admins[guildMember.guild.id];
-    if (!adminsInGuild) {
-        return false;
-    }
-    for (id of adminsInGuild) {
-        if (guildMember.id === id || guildMember.roles.cache.has(id)) {
-            return true;
-        }
-    }
-    return false;
+async function isAdmin(guildMember) {
+    return (await dbHandler.getAdmins(guildMember.guild)
+        .then(admins => admins.includes(guildMember.id))
+        .catch(reason => Logger.error(reason, guildMember.guild)));
 }
 
 module.exports = {
@@ -65,8 +59,7 @@ module.exports = {
     description: 'Gives admin permissions to a user or role.',
     execute,
     isAdmin,
-    addAdmin,
-    getAdmins,
+    addAdmins,
     syntax: '!admin [{role|user}...]',
     channel: 'staff',
     admin: true

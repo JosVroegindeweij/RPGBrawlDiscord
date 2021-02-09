@@ -1,74 +1,39 @@
 const Logger = require('../utils/logger');
+const dbHandler = require('../utils/databaseHandler');
+const Admin = require('./admin')
 
-const dbHandler = require("../utils/databaseHandler");
-const Admin = require('./admin');
-let channels = require('../secrets/channels.json');
-
-function execute(message, args) {
-    if (channels[message.guild.id] && !(args.includes('--force') || args.includes('-f'))) {
-        message.reply(`This server already has a bot category.`)
-            .catch(reason => Logger.error(reason, message.guild));
-        return;
-    }
-
-    if (dbHandler.existChannels(message.guild) && !(args.includes('--force') || args.includes('-f'))) {
-        message.reply(`This server already has a bot category.`)
-            .catch(reason => Logger.error(reason, message.guild));
-        return;
-    }
-
+async function execute(message, args) {
     let guild = message.guild;
-    message.mentions.users.forEach(user => Admin.addAdmin(guild, user.id));
-    message.mentions.roles.forEach(role => Admin.addAdmin(guild, role.id));
+
+    if ((await dbHandler.getChannels(guild))?.category &&
+        (!(args.includes('--force') || args.includes('-f')))) {
+        message.reply(`This server already has a bot category.`)
+            .catch(reason => Logger.error(reason, guild));
+        return;
+    }
+
+    Admin.addAdmins(message);
 
     let channelManager = guild.channels;
-    let everyone_role = guild.roles.everyone;
-    let bot_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'rpg brawl bot');
-    let admins = Admin.getAdmins(guild);
+    let permissionsOverwrite = await getPermissionOverwrites(guild);
 
     channelManager.create('RPG Brawl bot', {
         type: 'category'
     })
         .then(category => {
-            Logger.info('Created Bot channel category.', guild)
+            Logger.info(`Created bot channel category (${category.id})`, guild)
             Promise.all([
                 channelManager.create('staff', {
                     topic: 'Staff commands' +
                         buildTopic(message.client.commands, 'staff'),
                     parent: category,
-                    permissionOverwrites: [
-                        {
-                            id: everyone_role.id,
-                            deny: ['VIEW_CHANNEL']
-                        },
-                        {
-                            id: bot_role.id,
-                            allow: ['VIEW_CHANNEL']
-                        },
-                        ...admins.map(admin => ({
-                            id: admin,
-                            allow: ['VIEW_CHANNEL']
-                        }))
-                    ]
+                    permissionOverwrites: permissionsOverwrite['staff']
                 }),
                 channelManager.create('ta-standings', {
                     topic: 'TA standings updates' +
                         buildTopic(message.client.commands, 'ta-standings'),
                     parent: category,
-                    permissionOverwrites: [
-                        {
-                            id: everyone_role.id,
-                            deny: ['SEND_MESSAGES']
-                        },
-                        {
-                            id: bot_role.id,
-                            allow: ['SEND_MESSAGES']
-                        },
-                        ...admins.map(admin => ({
-                            id: admin,
-                            allow: ['SEND_MESSAGES']
-                        }))
-                    ]
+                    permissionOverwrites: permissionsOverwrite['ta-standings']
                 }),
                 channelManager.create('linking', {
                     topic: 'Linking trackmania logins with discord users' +
@@ -77,35 +42,80 @@ function execute(message, args) {
                 })
             ])
                 .then(channels => {
-                    Logger.info('Created bot channels.', guild);
+                    Logger.info(`Created bot channels (${channels[0].name}: ${channels[0].id}, ` +
+                        `${channels[1].name}: ${channels[1].id}, ${channels[2].name}: ${channels[2].id})`, guild);
                     dbHandler.saveChannels(
                         guild,
                         category,
                         channels[0],
                         channels[1],
                         channels[2]
-                    );
+                    )
                 })
-                .catch(reason => Logger.error(reason, message.guild))
-                .finally(() => {
-
-                });
+                .catch(reason => Logger.error(reason, message.guild));
         })
         .catch(reason => Logger.error(reason, message.guild));
 }
 
-function findChannelId(guild, channelName) {
-    return channels[guild.id]['channels'][channelName];
+async function findChannelId(guild, channelName) {
+    let channels = await dbHandler.getChannels(guild);
+    return channels?.hasOwnProperty(channelName) ? channels[channelName] : undefined;
 }
 
 function buildTopic(commands, channelName) {
     let topic = ' -';
-    for (cmd of commands) {
+    for (let cmd of commands) {
         if (cmd[1].channel === channelName) {
             topic += ' ' + cmd[1].syntax + ' -';
         }
     }
     return topic;
+}
+
+async function getPermissionOverwrites(guild) {
+    let adminIds = (await dbHandler.getAdmins(guild)).map(adm => adm.admin);
+    // Fetch all admins to make sure they are in cache
+    const adminUsersInGuild = (await guild.members.fetch({user: adminIds}))?.array() ?? [];
+    const adminRolesInGuild = (await guild.roles.fetch({user: adminIds}))?.array() ?? [];
+
+    // Remove admins that left the guild
+    let activeAdmins = adminUsersInGuild
+        .concat(adminRolesInGuild)
+        .map(a => a.id);
+    adminIds = adminIds.filter(admin => activeAdmins.includes(admin));
+    let everyone_role = guild.roles.everyone;
+    let bot_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'rpg brawl bot');
+
+    return {
+        'staff': [
+            {
+                id: everyone_role.id,
+                deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+            },
+            {
+                id: bot_role.id,
+                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+            },
+            ...adminIds.map(admin => ({
+                id: admin,
+                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+            }))
+        ],
+        'ta-standings': [
+            {
+                id: everyone_role.id,
+                deny: ['SEND_MESSAGES']
+            },
+            {
+                id: bot_role.id,
+                allow: ['SEND_MESSAGES']
+            },
+            ...adminIds.map(admin => ({
+                id: admin,
+                allow: ['SEND_MESSAGES']
+            }))
+        ]
+    };
 }
 
 module.exports = {
