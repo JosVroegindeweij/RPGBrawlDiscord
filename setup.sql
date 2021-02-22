@@ -4,8 +4,9 @@ USE rpgbrawl_discord;
 CREATE TABLE `channel` (
     `guild` varchar(255) PRIMARY KEY,
     `category` varchar(255) NOT NULL,
+    `help` varchar(255) NOT NULL,
     `staff` varchar(255) NOT NULL,
-    `ta_standings` varchar(255) NOT NULL,
+    `ta-standings` varchar(255) NOT NULL,
     `linking` varchar(255) NOT NULL
 ) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 CREATE TABLE `admin` (
@@ -15,10 +16,11 @@ CREATE TABLE `admin` (
     PRIMARY KEY(guild, admin)
 ) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 CREATE TABLE `spreadsheet` (
-    `guild` varchar(255) PRIMARY KEY,
+    `guild` varchar(255) NOT NULL,
     `spreadsheet` varchar(255) NOT NULL,
     `name` varchar(255) NOT NULL,
-    `range` varchar(255) NOT NULL
+    `range` varchar(255) NOT NULL,
+    PRIMARY KEY(guild, name)
 ) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 CREATE TABLE `player` (
     `guild` varchar(255) NOT NULL,

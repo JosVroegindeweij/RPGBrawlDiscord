@@ -15,11 +15,12 @@ const knex = require('knex')({
     asyncStackTraces: true
 });
 
-function saveChannels(guild, category, staff, ta_standings, linking) {
+function saveChannels(guild, category, help, staff, ta_standings, linking) {
     knex('channel')
         .insert({
             guild: guild.id,
             category: category.id,
+            help: help.id,
             staff: staff.id,
             ta_standings: ta_standings.id,
             linking: linking.id
@@ -88,6 +89,29 @@ function removePlayerLink(guild, columns) {
     return getPlayerLink(guild, columns).del();
 }
 
+function addSpreadsheetRange(guild, spreadsheet, name, range) {
+    knex('spreadsheet')
+        .insert({
+            'guild': guild.id,
+            'spreadsheet': spreadsheet,
+            'name': name,
+            'range': range
+        })
+        .onConflict(['guild', 'name'])
+        .merge()
+        .then(_ => Logger.info(`Stored spreadsheet ` +
+            `'${spreadsheet}', name: '${name}', range: '${range}' to database.`, guild))
+        .catch(reason => Logger.error(reason, guild));
+}
+
+function getSpreadsheetRange(guild, name) {
+    return knex('spreadsheet')
+        .where({
+            'guild': guild.id,
+            'name': name
+        });
+}
+
 module.exports = {
     saveChannels,
     getChannels,
@@ -95,5 +119,7 @@ module.exports = {
     getAdmins,
     addPlayerLink,
     getPlayerLink,
-    removePlayerLink
+    removePlayerLink,
+    addSpreadsheetRange,
+    getSpreadsheetRange
 }

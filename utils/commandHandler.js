@@ -66,8 +66,7 @@ async function onMessage(client, message) {
                         .catch(reason => Logger.error(reason, message.guild));
                 }
             }
-        });
-}
+        });}
 
 module.exports = {
     initCommands,

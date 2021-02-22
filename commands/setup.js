@@ -21,8 +21,12 @@ async function execute(message, args) {
         type: 'category'
     })
         .then(category => {
-            Logger.info(`Created bot channel category (${category.id})`, guild)
+            Logger.info(`Created bot channel category (${category.id})`, guild);
             Promise.all([
+                channelManager.create('help', {
+                    topic: 'Channel to get help/explanations with/of commands',
+                    parent: category
+                }),
                 channelManager.create('staff', {
                     topic: 'Staff commands' +
                         buildTopic(message.client.commands, 'staff'),
@@ -43,14 +47,19 @@ async function execute(message, args) {
             ])
                 .then(channels => {
                     Logger.info(`Created bot channels (${channels[0].name}: ${channels[0].id}, ` +
-                        `${channels[1].name}: ${channels[1].id}, ${channels[2].name}: ${channels[2].id})`, guild);
+                        `${channels[1].name}: ${channels[1].id}, ${channels[2].name}: ${channels[2].id}, ` +
+                        `${channels[3].name}: ${channels[3].id})`, guild);
                     dbHandler.saveChannels(
                         guild,
                         category,
                         channels[0],
                         channels[1],
-                        channels[2]
+                        channels[2],
+                        channels[3]
                     )
+                    // TODO Add standard message in English and French at the top
+                    channels[0].send(getHelpMessage(guild, category, channels))
+                        .catch(reason => Logger.error(reason, message.guild));
                 })
                 .catch(reason => Logger.error(reason, message.guild));
         })
@@ -116,6 +125,25 @@ async function getPermissionOverwrites(guild) {
             }))
         ]
     };
+}
+
+function getHelpMessage(guild, category, channels) {
+    return `🇬🇧\n` +
+        `This is the bot category of the RPG Brawl. ` +
+        `There are 2 channels: ${channels[2]} and ${channels[3]}.\n\n` +
+        `In ${channels[2]}, there will be updates of the current TA standing. ` +
+        `These are updated every 10 minutes, in the same way as the spreadsheet.\n\n` +
+        `In ${channels[3]}, you can link your trackmania login to your discord name. ` +
+        `If you do this, the ranking in ${channels[2]} will contain your discord nickname instead of your login.\n\n` +
+        `If you have any questions or anything is unclear, you can ask questions here.\n\n` +
+        `🇫🇷\n` +
+        `Voici la catégorie bot du RPG Brawl.`  +
+        `Il y a 2 channels: ${channels[2]} et ${channels[3]}.\n\n` +
+        `Dans ${channels[2]}, il y aura les leaderboards TA actuels. `  +
+        `Ils sont mis à jour toutes les 10 minutes, de la même manière que la spreadsheet.\n\n` +
+        `Dans ${channels[3]}, vous pouvez lier votre login trackmania à votre pseudo discord. `  +
+        `Si vous faites ceci, les leaderboards dans ${channels[2]} contiendront votre pseudo discord à la place de votre login.\n\n` +
+        `Si vous avez des questions ou que quelque chose n'est pas clair, vous pouvez poser vos questions ici.\n\n`
 }
 
 module.exports = {

@@ -5,8 +5,6 @@ const Logger = require('../utils/logger');
 const GoogleIntegration = require('../utils/googleIntegration.js');
 const dbHandler = require('../utils/databaseHandler');
 
-const {spreadsheetID, loginRange, avgsRange} = require('../secrets/config.json');
-
 let response = {};
 let latestRequest = {};
 let logins = {};
@@ -14,7 +12,7 @@ let avgs = {};
 let client;
 let scheduledTask = {};
 
-function execute(message) {
+async function execute(message) {
     if (!scheduledTask[message.channel.id]) {
         scheduledTask[message.channel.id] = setInterval(execute_requests.bind(null, message.channel), 600 * 1000);
     }
@@ -22,12 +20,20 @@ function execute(message) {
         client = message.client;
     }
     latestRequest[message.channel.id] = message;
-    execute_requests(message.channel);
+
+    let login = (await dbHandler.getSpreadsheetRange(message.guild, 'login'))[0];
+    let avg = (await dbHandler.getSpreadsheetRange(message.guild, 'avg'))[0];
+
+    let spreadsheetID = login.spreadsheet;
+    let loginRange = login.range;
+    let avgRange = avg.range;
+
+    execute_requests(message.channel, spreadsheetID, loginRange, avgRange);
 }
 
-function execute_requests(channel) {
+function execute_requests(channel, spreadsheetID, loginRange, avgRange) {
     GoogleIntegration.call(GoogleIntegration.getRange, [spreadsheetID, loginRange, saveLogins.bind(null, channel)]);
-    GoogleIntegration.call(GoogleIntegration.getRange, [spreadsheetID, avgsRange, saveAvgs.bind(null, channel)]);
+    GoogleIntegration.call(GoogleIntegration.getRange, [spreadsheetID, avgRange, saveAvgs.bind(null, channel)]);
 }
 
 function stop_scheduler(message) {
@@ -38,22 +44,27 @@ function stop_scheduler(message) {
 
 function saveLogins(channel, l) {
     logins[channel.id] = l;
-    replyRange(channel);
+    replyRange(channel)
+        .catch(reason => Logger.error(reason, channel.guild));
 
 }
 
 function saveAvgs(channel, a) {
     avgs[channel.id] = a;
-    replyRange(channel);
+    replyRange(channel)
+        .catch(reason => Logger.error(reason, channel.guild));
 }
 
-function replyRange(channel) {
+async function replyRange(channel) {
     if (!(logins[channel.id] && logins[channel.id].length) ||
         !(avgs[channel.id] && avgs[channel.id].length)) return;
-    let table = generateTable(channel);
+    let table = await generateTable(channel);
 
     let delimiter = /\n\+-+\+/;
     let border = /\n\|\s*33/;
+
+    console.log(table);
+    console.log(typeof table);
 
     table = Utils.insert(table, table.match(delimiter)[0], table.search(border));
 

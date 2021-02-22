@@ -65,9 +65,6 @@ function unlink(message, args) {
         return;
     }
 
-    console.log('Hello');
-    console.log(args);
-
     if (message.mentions.members.size) {
         let member = message.mentions.members.first();
         dbHandler.removePlayerLink(message.guild, {id: member.id})
