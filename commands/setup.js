@@ -67,6 +67,7 @@ async function execute(message, args) {
 }
 
 async function findChannelId(guild, channelName) {
+    channelName = channelName.replace('-', '_');
     let channels = await dbHandler.getChannels(guild);
     return channels?.hasOwnProperty(channelName) ? channels[channelName] : undefined;
 }

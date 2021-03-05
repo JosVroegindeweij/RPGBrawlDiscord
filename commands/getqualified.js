@@ -13,12 +13,10 @@ let client;
 let scheduledTask = {};
 
 async function execute(message) {
-    if (!scheduledTask[message.channel.id]) {
-        scheduledTask[message.channel.id] = setInterval(execute_requests.bind(null, message.channel), 600 * 1000);
-    }
     if (!client) {
         client = message.client;
     }
+
     latestRequest[message.channel.id] = message;
 
     let login = (await dbHandler.getSpreadsheetRange(message.guild, 'login'))[0];
@@ -28,7 +26,13 @@ async function execute(message) {
     let loginRange = login.range;
     let avgRange = avg.range;
 
-    execute_requests(message.channel, spreadsheetID, loginRange, avgRange);
+    let func = execute_requests.bind(null, message.channel).bind(null, spreadsheetID).bind(null, loginRange).bind(null, avgRange);
+
+    if (!scheduledTask[message.channel.id]) {
+        scheduledTask[message.channel.id] = setInterval(func, 600 * 1000);
+    }
+
+    func();
 }
 
 function execute_requests(channel, spreadsheetID, loginRange, avgRange) {
@@ -63,16 +67,15 @@ async function replyRange(channel) {
     let delimiter = /\n\+-+\+/;
     let border = /\n\|\s*33/;
 
-    console.log(table);
-    console.log(typeof table);
-
-    table = Utils.insert(table, table.match(delimiter)[0], table.search(border));
+    if ((table.match(/\n/g) || []).length > 38) {
+        table = Utils.insert(table, table.match(delimiter)[0], table.search(border));
+    }
 
     if (!latestRequest[channel.id].deleted) {
         latestRequest[channel.id].delete()
             .catch(reason => Logger.error(reason, channel.guild));
     }
-    if (!response[channel.id]) {
+    if (!response[channel.id] || response[channel.id].deleted) {
         channel.send('```\n' + table + '```')
             .then(message => response[channel.id] = message)
             .catch(reason => Logger.error(reason, channel.guild));
@@ -90,7 +93,7 @@ async function generateTable(channel) {
     table.setBorder('|', '-', '+', '+');
     table.setHeading('Rank', 'player', 'avg');
     for (let index = 0; index < logins[channel.id].length; index++) {
-        let link = await dbHandler.getPlayerLink(channel.guild, {login: logins[channel.id][index][0]})
+        let link = (await dbHandler.getPlayerLink(channel.guild, {login: logins[channel.id][index][0]}))[0];
         let user = channel.guild.members.cache.get(link?.discord_id);
         let login = user?.displayName.replace(char_regex, '') || logins[channel.id][index][0];
         let displayName = login.length <= 23 ? login : login.slice(0, 22).concat('…');

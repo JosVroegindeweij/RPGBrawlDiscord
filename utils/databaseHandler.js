@@ -3,15 +3,14 @@ const Logger = require('./logger');
 const {db_host, db_username, db_password, db_name} = require('../secrets/config.json');
 
 const knex = require('knex')({
-    client: 'mysql',
-    version: '5.7',
+    client: 'pg',
     connection: {
         host: db_host,
         user: db_username,
         password: db_password,
         database: db_name
     },
-    debug: true,
+    debug: false,
     asyncStackTraces: true
 });
 
