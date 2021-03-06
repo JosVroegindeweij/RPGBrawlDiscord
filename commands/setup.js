@@ -82,16 +82,7 @@ function buildTopic(commands, channelName) {
 }
 
 async function getPermissionOverwrites(guild) {
-    let adminIds = (await dbHandler.getAdmins(guild)).map(adm => adm.admin);
-    // Fetch all admins to make sure they are in cache
-    const adminUsersInGuild = (await guild.members.fetch({user: adminIds}))?.array() ?? [];
-    const adminRolesInGuild = (await guild.roles.fetch({user: adminIds}))?.array() ?? [];
-
-    // Remove admins that left the guild
-    let activeAdmins = adminUsersInGuild
-        .concat(adminRolesInGuild)
-        .map(a => a.id);
-    adminIds = adminIds.filter(admin => activeAdmins.includes(admin));
+    let adminIds = Admin.getActiveAdmins(guild);
     let everyone_role = guild.roles.everyone;
     let bot_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'rpg brawl bot');
 

@@ -54,12 +54,26 @@ async function isAdmin(guildMember) {
         .catch(reason => Logger.error(reason, guildMember.guild)));
 }
 
+async function getActiveAdmins(guild) {
+    let adminIds = (await dbHandler.getAdmins(guild)).map(adm => adm.admin);
+    // Fetch all admins to make sure they are in cache
+    const adminUsersInGuild = (await guild.members.fetch({user: adminIds}))?.array() ?? [];
+    const adminRolesInGuild = (await guild.roles.fetch({user: adminIds}))?.array() ?? [];
+
+    // Remove admins that left the guild
+    let activeAdmins = adminUsersInGuild
+        .concat(adminRolesInGuild)
+        .map(a => a.id);
+    return adminIds.filter(admin => activeAdmins.includes(admin));
+}
+
 module.exports = {
     name: 'admin',
     description: 'Gives admin permissions to a user or role.',
     execute,
     isAdmin,
     addAdmins,
+    getActiveAdmins,
     syntax: '!admin [{role|user}...]',
     channel: 'staff',
     admin: true
