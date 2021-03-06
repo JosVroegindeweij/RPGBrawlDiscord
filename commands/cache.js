@@ -14,6 +14,6 @@ module.exports = {
     description: 'Adds all linked users to cache.',
     execute,
     syntax: '!cache',
-    channel: 'cache',
-    admin: false
+    channel: 'staff',
+    admin: true
 };
