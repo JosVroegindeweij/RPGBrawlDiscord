@@ -57,7 +57,6 @@ async function execute(message, args) {
                         channels[2],
                         channels[3]
                     )
-                    // TODO Add standard message in English and French at the top
                     channels[0].send(getHelpMessage(guild, category, channels))
                         .catch(reason => Logger.error(reason, message.guild));
                 })

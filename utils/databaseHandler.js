@@ -69,18 +69,21 @@ function addPlayerLink(guild, login, member) {
 }
 
 function getPlayerLink(guild, columns) {
-    if (columns.login) {
+    if (columns?.login) {
         return knex('player')
             .where({
                 'guild': guild.id,
                 'login': columns.login
             });
-    } else {
+    } else if (columns?.id){
         return knex('player')
             .where({
                 'guild': guild.id,
                 'discord_id': columns.id
             });
+    } else {
+        return knex('player')
+            .select();
     }
 }
 
