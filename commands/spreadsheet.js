@@ -14,7 +14,7 @@ function execute(message, args) {
     } else if (nameIndex === -1 && rangeIndex === -1){
         let loginRange = loginRangeIndex >= 0 ? args[loginRangeIndex + 1] : 'SR1!AC3:AC42';
         dbHandler.addSpreadsheetRange(guild, spreadsheet, 'login', loginRange);
-        let avgRange = avgRangeIndex >= 0 ? args[avgRangeIndex + 1] : 'SR1!AA3:AA42';
+        let avgRange = avgRangeIndex >= 0 ? args[avgRangeIndex + 1] : 'SR1!AD3:AD42';
         dbHandler.addSpreadsheetRange(guild, spreadsheet, 'avg', avgRange);
     } else {
         message.reply(`Command used wrongly`)
