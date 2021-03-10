@@ -26,7 +26,11 @@ async function execute(message) {
     let loginRange = login.range;
     let avgRange = avg.range;
 
-    let func = execute_requests.bind(null, message.channel).bind(null, spreadsheetID).bind(null, loginRange).bind(null, avgRange);
+    let func = execute_requests
+        .bind(null, message.channel)
+        .bind(null, spreadsheetID)
+        .bind(null, loginRange)
+        .bind(null, avgRange);
 
     if (!scheduledTask[message.channel.id]) {
         scheduledTask[message.channel.id] = setInterval(func, 600 * 1000);
@@ -94,7 +98,7 @@ async function generateTable(channel) {
     table.setHeading('Rank', 'player', 'avg');
     for (let index = 0; index < logins[channel.id].length; index++) {
         let link = (await dbHandler.getPlayerLink(channel.guild, {login: logins[channel.id][index][0]}))[0];
-        let user = channel.guild.members.cache.get(link?.discord_id);
+        let user = channel.guild.members.fetch(link?.discord_id);
         let login = user?.displayName.replace(char_regex, '') || logins[channel.id][index][0];
         let displayName = login.length <= 23 ? login : login.slice(0, 22).concat('…');
         let avg = (+(avgs[channel.id][index][0].replace(/,/, '.'))).toFixed(1);

@@ -25,8 +25,6 @@ function execute(message, args) {
         .catch(reason => Logger.error(reason, message.guild));
 }
 
-
-
 module.exports = {
     name: 'spreadsheet',
     aliases: [],

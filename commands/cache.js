@@ -3,7 +3,9 @@ const Logger = require('../utils/logger');
 
 function execute(message) {
     dbHandler.getPlayerLink(message.guild)
-        .then(links => message.guild.members.fetch(links.map(l => l.discord_id))
+        .then(links => message.guild.members.fetch({
+            user: links.map(l => l.discord_id)
+        })
             .catch(reason => Logger.error(reason, message.guild)))
         .catch(reason => Logger.error(reason, message.guild));
 }
