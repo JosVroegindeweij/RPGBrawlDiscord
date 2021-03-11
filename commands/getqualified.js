@@ -98,8 +98,8 @@ async function generateTable(channel) {
     table.setHeading('Rank', 'player', 'avg');
     for (let index = 0; index < logins[channel.id].length; index++) {
         let link = (await dbHandler.getPlayerLink(channel.guild, {login: logins[channel.id][index][0]}))[0];
-        let user = channel.guild.members.fetch(link?.discord_id);
-        let login = user?.displayName.replace(char_regex, '') || logins[channel.id][index][0];
+        let user = await channel.guild.members.fetch(link?.discord_id);
+        let login = user?.displayName?.replace(char_regex, '') || logins[channel.id][index][0];
         let displayName = login.length <= 23 ? login : login.slice(0, 22).concat('…');
         let avg = (+(avgs[channel.id][index][0].replace(/,/, '.'))).toFixed(1);
         table.addRow(index + 1, displayName, avg);

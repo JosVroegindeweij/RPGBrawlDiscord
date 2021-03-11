@@ -1,9 +1,10 @@
 const dbHandler = require('../utils/databaseHandler');
 const Logger = require('../utils/logger');
 const GoogleIntegration = require('../utils/googleIntegration');
-const Admin = require('admin');
+const Admin = require('./admin');
 
 let members = [];
+let nrQualified = 2;
 
 async function execute(message) {
     let guild = message.guild;
@@ -14,15 +15,17 @@ async function execute(message) {
 async function getQualified(guild) {
     let spreadsheetData = (await dbHandler.getSpreadsheetRange(guild, 'login'))[0];
     let spreadsheetID = spreadsheetData.spreadsheet;
-    let loginRange = spreadsheetData.range;
+    let loginRange = 'SR1!AC3:AC5';
 
-    GoogleIntegration.call(GoogleIntegration.getRange, [spreadsheetID, loginRange, handleQualified.bind(guild)]);
+    GoogleIntegration.call(GoogleIntegration.getRange, [spreadsheetID, loginRange, handleQualified.bind(null, guild)]);
 }
 
 async function handleQualified(guild, logins) {
     for (let i = 0; i < logins.length; i++) {
+        console.log(logins[i])
         let link = (await dbHandler.getPlayerLink(guild, {login: logins[i][0]}))[0];
-        let member = channel.guild.members.fetch(link?.discord_id);
+        let member = await guild.members.fetch(link?.discord_id);
+        console.log(member.user.tag);
         members.push(member);
     }
 
@@ -32,11 +35,11 @@ async function handleQualified(guild, logins) {
 async function determinePlayoffPlayers(guild) {
     try {
         let roleInformation = await getRolesAndPermissionOverwrites(guild);
-        let channels = (await dbHandler.getChannels(guild))[0];
+        let channels = await dbHandler.getChannels(guild);
         let channelManager = guild.channels;
         let category = guild.channels.cache.get(channels.category);
 
-        for (let member of members.slice(0, 32)) {
+        for (let member of members.slice(0, nrQualified)) {
             await member.roles.add(roleInformation.qualified);
         }
 
@@ -49,7 +52,7 @@ async function determinePlayoffPlayers(guild) {
             `🇬🇧\n` +
             `Hey ${roleInformation.qualified}, you have qualified for the playoff stage. ` +
             `To make sure we get full matches, we want to know if you plan on playing the playoffs. ` +
-            `Of course it's not a problem if you plan to participate, but something unexpected happens and you can't be at your match.\n\n` +
+            `Don't worry if you plan to participate, but something unexpected happens and you can't be at your match.\n\n` +
             `If you want to participate, react to this message with ✅, if you want to drop out, react with ❌.\n\n` +
             `🇫🇷\n` +
             `Hey ${roleInformation.qualified}, vous êtes qualifié pour la phase des playoffs. ` +
@@ -58,8 +61,8 @@ async function determinePlayoffPlayers(guild) {
             `Si vous voulez participer, réagissez à ce message avec ✅, si vous voulez vous désister, réagissez avec ❌.\n\n`
         );
 
-        const filterAccept = (reaction, _) => reaction.emoji.name === '✅';
-        const filterDeny = (reaction, _) => reaction.emoji.name === '❌';
+        const filterAccept = (reaction, user) => !user.bot && reaction.emoji.name === '✅';
+        const filterDeny = (reaction, user) => !user.bot && reaction.emoji.name === '❌';
 
         const collectorAccept = message.createReactionCollector(filterAccept);
         const collectorDeny = message.createReactionCollector(filterDeny);
@@ -91,7 +94,7 @@ async function determinePlayoffPlayers(guild) {
                         member.roles.remove(roleInformation.qualified)
                             .then(member => member.roles.add(roleInformation.dropouts))
                             .then(_ => {
-                                let replacement = members[2 + roleInformation.dropouts.members.size - 1];
+                                let replacement = members[nrQualified + roleInformation.dropouts.members.size - 1];
                                 return replacement.roles.add(roleInformation.qualified);
                             })
                             .then(replacement => {
@@ -108,13 +111,13 @@ async function determinePlayoffPlayers(guild) {
                     confirmation.delete().catch(reason => Logger.error(reason, guild));
                 });
 
-                message.react('✅').catch(reason => Logger.error(reason, guild));
-                message.react('❌').catch(reason => Logger.error(reason, guild));
+                confirmation.react('✅').catch(reason => Logger.error(reason, guild));
+                confirmation.react('❌').catch(reason => Logger.error(reason, guild));
             })
         });
 
-        await message.react('✅').catch(reason => Logger.error(reason, guild));
-        await message.react('❌').catch(reason => Logger.error(reason, guild));
+        message.react('✅').catch(reason => Logger.error(reason, guild));
+        message.react('❌').catch(reason => Logger.error(reason, guild));
 
 
     } catch (err) {
@@ -123,7 +126,7 @@ async function determinePlayoffPlayers(guild) {
 }
 
 async function getRolesAndPermissionOverwrites(guild) {
-    let adminIds = Admin.getActiveAdmins(guild);
+    let adminIds = await Admin.getActiveAdmins(guild);
     let everyone_role = guild.roles.everyone;
     let bot_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'rpg brawl bot');
 
@@ -152,7 +155,7 @@ async function getRolesAndPermissionOverwrites(guild) {
         dropouts: dropouts,
         permissionOverwrites: [
             {
-                id: everyone_role.id,
+                id: everyone_role,
                 deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
             },
             {
@@ -168,15 +171,13 @@ async function getRolesAndPermissionOverwrites(guild) {
                 allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
             },
             {
-                id: bot_role.id,
+                id: bot_role,
                 allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
             },
-            {
-                id: adminIds.map(admin => ({
-                    id: admin
-                })),
+            ...adminIds.map(admin => ({
+                id: admin,
                 allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
-            }
+            }))
         ]
     }
 }
