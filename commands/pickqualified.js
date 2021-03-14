@@ -13,20 +13,22 @@ async function execute(message) {
 }
 
 async function getQualified(guild) {
-    let spreadsheetData = (await dbHandler.getSpreadsheetRange(guild, 'login'))[0];
+    let spreadsheetData = (await dbHandler.getSpreadsheetRange(guild, 'loginQualified'))[0];
     let spreadsheetID = spreadsheetData.spreadsheet;
-    let loginRange = 'SR1!AC3:AC5';
+    let loginRange = spreadsheetData.range;
 
     GoogleIntegration.call(GoogleIntegration.getRange, [spreadsheetID, loginRange, handleQualified.bind(null, guild)]);
 }
 
 async function handleQualified(guild, logins) {
-    for (let i = 0; i < logins.length; i++) {
-        console.log(logins[i])
-        let link = (await dbHandler.getPlayerLink(guild, {login: logins[i][0]}))[0];
-        let member = await guild.members.fetch(link?.discord_id);
-        console.log(member.user.tag);
-        members.push(member);
+    while (members.length < nrQualified){
+        let link = (await dbHandler.getPlayerLink(guild, {login: logins[i + skipped][0]}))[0];
+        if (link) {
+            let member = await guild.members.fetch(link?.discord_id);
+            if (member) {
+                members.push(member);
+            }
+        }
     }
 
     await determinePlayoffPlayers(guild);
