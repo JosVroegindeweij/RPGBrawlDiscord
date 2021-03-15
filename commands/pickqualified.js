@@ -116,7 +116,7 @@ async function determinePlayoffPlayers(guild) {
                             .catch(reason => Logger.error(reason, guild));
                     }
                 });
-                collectorConfirmationDeny.on('collect', (_, user) => {
+                collectorConfirmationDeny.on('collect', _ => {
                     confirmation.delete().catch(reason => Logger.error(reason, guild));
                 });
 
