@@ -21,14 +21,21 @@ async function getQualified(guild) {
 }
 
 async function handleQualified(guild, logins) {
+    let skipped = 0
+    let i = 0;
     while (members.length < nrQualified){
         let link = (await dbHandler.getPlayerLink(guild, {login: logins[i + skipped][0]}))[0];
         if (link) {
             let member = await guild.members.fetch(link?.discord_id);
             if (member) {
                 members.push(member);
+            } else {
+                skipped++;
             }
+        } else {
+            skipped++;
         }
+        i++;
     }
 
     await determinePlayoffPlayers(guild);
