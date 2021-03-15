@@ -67,8 +67,10 @@ async function determinePlayoffPlayers(guild) {
             `Si vous voulez participer, réagissez à ce message avec ✅, si vous voulez vous désister, réagissez avec ❌.\n\n`
         );
 
-        const filterAccept = (reaction, user) => !user.bot && reaction.emoji.name === '✅';
-        const filterDeny = (reaction, user) => !user.bot && reaction.emoji.name === '❌';
+        const filterAccept = (reaction, user) => !user.bot && reaction.emoji.name === '✅' &&
+            !guild.member(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
+        const filterDeny = (reaction, user) => !user.bot && reaction.emoji.name === '❌' &&
+            !guild.member(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
 
         const collectorAccept = message.createReactionCollector(filterAccept);
         const collectorDeny = message.createReactionCollector(filterDeny);
@@ -88,8 +90,10 @@ async function determinePlayoffPlayers(guild) {
                 `${member}\n 🇬🇧 Are you sure you want to drop out?\n` +
                 `🇫🇷 Etes vous sur de vouloir vous désister?\n`
             ).then(confirmation => {
-                const filterAcceptMember = (reaction, user) => member === guild.member(user) && reaction.emoji.name === '✅';
-                const filterDenyMember = (reaction, user) => member === guild.member(user) && reaction.emoji.name === '❌';
+                const filterAcceptMember = (reaction, user) => member === guild.member(user) && reaction.emoji.name === '✅' &&
+                    !guild.member(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
+                const filterDenyMember = (reaction, user) => member === guild.member(user) && reaction.emoji.name === '❌' &&
+                    !guild.member(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
 
                 const collectorConfirmationAccept = confirmation.createReactionCollector(filterAcceptMember);
                 const collectorConfirmationDeny = confirmation.createReactionCollector(filterDenyMember);
