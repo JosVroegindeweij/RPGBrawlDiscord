@@ -8,6 +8,8 @@ let nrQualified = 2;
 
 async function execute(message) {
     let guild = message.guild;
+    message.reply(`Attempting to pick the qualified players`)
+        .catch(reason => Logger.error(reason, guild));
 
     await getQualified(guild);
 }

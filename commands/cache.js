@@ -7,6 +7,8 @@ function execute(message) {
             user: links.map(l => l.discord_id)
         })
             .catch(reason => Logger.error(reason, message.guild)))
+        .then(_ => message.reply(`Cached all linked discord members`)
+            .catch(reason => Logger.error(reason, message.guild)))
         .catch(reason => Logger.error(reason, message.guild));
 }
 
