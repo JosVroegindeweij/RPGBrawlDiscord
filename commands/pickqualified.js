@@ -149,7 +149,9 @@ async function getRolesAndPermissionOverwrites(guild) {
     let playoffs = await guild.roles.create({
         data: {
             name: 'playoffs',
-            color: 'YELLOW'
+            color: 'YELLOW',
+            hoist: true,
+            position: 5
         }
     });
 
