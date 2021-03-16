@@ -35,7 +35,21 @@ function getRange(spreadsheetId, range, callback, auth) {
             return Logger.error('The API returned an error: ' + err, 'SPREADSHEETS');
         }
         callback(res.data.values);
-    })
+    });
+}
+
+function getBatch(spreadsheetId, ranges, callback, auth) {
+    const sheets = google.sheets({version: 'v4', auth});
+    sheets.spreadsheets.values.batchGet({
+        spreadsheetId: spreadsheetId,
+        majorDimension: 'COLUMNS',
+        ranges: ranges
+    }, (err, res) => {
+        if (err) {
+            return Logger.error('The API returned an error: ' + err, 'SPREADSHEETS');
+        }
+        callback(res.data.valueRanges);
+    });
 }
 
 /**
@@ -91,5 +105,6 @@ function getNewToken(oAuth2Client, callback) {
 
 module.exports = {
     call,
-    getRange
+    getRange,
+    getBatch
 }

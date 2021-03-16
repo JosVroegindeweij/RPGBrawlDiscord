@@ -1,4 +1,4 @@
-CREATE TYPE  adminenum AS ENUM('role', 'user');
+CREATE TYPE adminenum AS ENUM('role', 'user');
 CREATE TABLE channel (
     guild varchar(90) PRIMARY KEY,
     category varchar(90) NOT NULL,
