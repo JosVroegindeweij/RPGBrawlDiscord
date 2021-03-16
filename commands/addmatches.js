@@ -33,7 +33,7 @@ async function makeRound(guild, round) {
         }
     });
 
-    let spreadsheetData = (await dbHandler.getSpreadsheetRange(guild, 'loginQualified'))[0];
+    let spreadsheetData = (await dbHandler.getSpreadsheetRange(guild, 'login'))[0];
     let spreadsheetID = spreadsheetData.spreadsheet;
     let loginRanges = [];
     for (let i = 0; i < round.nrMatches; i++) {
@@ -119,9 +119,6 @@ async function makeMatches(guild, roundRole, matches) {
 
         let members = []
         for (let j = 0; j < 4; j++) {
-            console.log(matches);
-            console.log(i);
-            console.log(j);
             let link = (await dbHandler.getPlayerLink(guild, {login: matches[i][j]}))[0];
             if (link) {
                 let member = await guild.members.fetch(link.discord_id);
@@ -134,7 +131,7 @@ async function makeMatches(guild, roundRole, matches) {
         }
         await matchChannel.send(
             `🇬🇧\n` +
-            `Hey ${roundRole}, you have qualified for the next round: ${roundRole.name}.\n\n` +
+            `Hey ${roundRole}, you have qualified for the next round.\n\n` +
             `This channel is for the 4 of you to agree on a match date. Default time will be this saturday, 20:00 CET and the only way ` +
             `this changes is if every player agrees. If there are special circumstances, tag the ${staffRole} ` +
             `and we will try to resolve it. Also tag us if the match is scheduled, so we can make a server ready at that time!\n\n` +
