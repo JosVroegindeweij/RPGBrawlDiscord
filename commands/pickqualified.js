@@ -151,7 +151,7 @@ async function getRolesAndPermissionOverwrites(guild) {
             name: 'playoffs',
             color: 'YELLOW',
             hoist: true,
-            position: 5
+            position: 6
         }
     });
 
