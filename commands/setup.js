@@ -82,7 +82,7 @@ function buildTopic(commands, channelName) {
 }
 
 async function getPermissionOverwrites(guild) {
-    let adminIds = Admin.getActiveAdmins(guild);
+    let adminIds = await Admin.getActiveAdmins(guild);
     let everyone_role = guild.roles.everyone;
     let bot_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'rpg brawl bot');
 
@@ -108,11 +108,11 @@ async function getPermissionOverwrites(guild) {
             },
             {
                 id: bot_role.id,
-                allow: ['SEND_MESSAGES']
+                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
             },
             ...adminIds.map(admin => ({
                 id: admin,
-                allow: ['SEND_MESSAGES']
+                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
             }))
         ]
     };
