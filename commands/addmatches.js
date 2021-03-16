@@ -95,18 +95,33 @@ async function makeMatches(guild, roundRole, matches) {
             parent: matchCategory,
             permissionOverwrites: [
                 {
+                    id: everyoneRole.id,
+                    deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                },
+                {
                     id: roundRole.id,
                     deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
                 },
                 {
                     id: matchRole.id,
                     allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
-                }
+                },
+                {
+                    id: botRole.id,
+                    allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                },
+                ...adminIds.map(admin => ({
+                    id: admin,
+                    allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                }))
             ]
         });
 
         let members = []
         for (let j = 0; j < 4; j++) {
+            console.log(matches);
+            console.log(i);
+            console.log(j);
             let link = (await dbHandler.getPlayerLink(guild, {login: matches[i][j]}))[0];
             if (link) {
                 let member = await guild.members.fetch(link.discord_id);
