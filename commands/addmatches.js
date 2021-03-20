@@ -132,16 +132,32 @@ async function makeMatches(guild, roundRole, matches) {
         await matchChannel.send(
             `🇬🇧\n` +
             `Hey ${roundRole}, you have qualified for the next round.\n\n` +
-            `This channel is for the 4 of you to agree on a match date. Default time will be this saturday, 20:00 CET and the only way ` +
-            `this changes is if every player agrees. If there are special circumstances, tag the ${staffRole} ` +
-            `and we will try to resolve it. Also tag us if the match is scheduled, so we can make a server ready at that time!\n\n` +
+            `This channel is for the 4 of you to agree on a match date. `+
+            `Default time will be this saturday, 20:00 CET and the only way ` +
+            `this changes is if every player agrees. If there are special circumstances, ` +
+            `tag the ${staffRole} and we will try to resolve it. ` +
+            `Also tag us if the match is scheduled, so we can make a server ready at that time!\n\n` +
             `Banning will take place in the server, when the match starts. glhf!\n\n` +
             `Ban order:\n` +
             `1: ${matches[i][3]} - ${members[3]}\n` +
             `2: ${matches[i][2]} - ${members[2]}\n` +
             `3: ${matches[i][1]} - ${members[1]}\n` +
             `4: ${matches[i][0]} - ${members[0]}\n` +
-            `🇫🇷\n`
+            `🇫🇷\n` +
+            `Hey ${roundRole}, vous êtes qualifié pour le prochain match.\n\n` +
+            `Ce channel est pour que vous décidiez d'une date de match entre vous 4. ` +
+            `Le jour et l'heure par défaut seront le samedi à 20h CET et la seule facon ` +
+            `pour que cela change et que tous les joueurs soient d'accord. ` +
+            `S'il y a des circonstances particulières, ping les ${staffRole} ` +
+            `et nous essaierons de les résoudre. ` +
+            `Vous devez aussi nous ping si l'heure et le jour ont été décidés, ` +
+            `pour que nous puissions avoir un serveur prêt à ce moment là!\n\n` +
+            `Le ban des maps aura lieu sur le serveur, au début du match. glhf!\n\n` +
+            `Ordre des bans:\n` +
+            `1: ${matches[i][3]} - ${members[3]}\n` +
+            `2: ${matches[i][2]} - ${members[2]}\n` +
+            `3: ${matches[i][1]} - ${members[1]}\n` +
+            `4: ${matches[i][0]} - ${members[0]}\n`
         );
     }
 }
