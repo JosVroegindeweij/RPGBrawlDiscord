@@ -4,7 +4,7 @@ const GoogleIntegration = require('../utils/googleIntegration');
 const Admin = require('./admin');
 
 let members = [];
-let nrQualified = 2;
+let nrQualified = 32;
 
 async function execute(message) {
     let guild = message.guild;
