@@ -27,9 +27,13 @@ async function handleQualified(guild, logins) {
     while (i < logins.length) {
         let link = (await dbHandler.getPlayerLink(guild, {login: logins[i][0]}))[0];
         if (link) {
-            let member = await guild.members.fetch(link.discord_id);
-            if (member) {
-                members.push(member);
+            try {
+                let member = await guild.members.fetch(link.discord_id);
+                if (member) {
+                    members.push(member);
+                }
+            } catch (e) {
+                Logger.error(e, guild);
             }
         }
         i++;
