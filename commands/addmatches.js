@@ -14,8 +14,6 @@ async function execute(message, matches) {
         for (let match of matches) {
             if (rounds[match]) {
                 await makeRound(guild, rounds[match]);
-            } else if (rounds[match.slice(0, -2)]) {
-                await makeMatch(guild, rounds[match.slice(0, -2)], match);
             }
         }
     } catch (err) {
