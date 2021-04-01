@@ -162,10 +162,6 @@ async function makeMatches(guild, roundRole, matches) {
     }
 }
 
-async function getSpreadsheetData() {
-
-}
-
 module.exports = {
     name: 'addmatches',
     aliases: ['am', 'matches'],

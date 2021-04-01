@@ -19,16 +19,6 @@
     "diffRanges": 8,
     "position": 2
   },
-  "LBQF+": {
-    "name": "LBQF+",
-    "nrMatches": 4,
-    "color": "#4169E1",
-    "sheet": "LoserBracket",
-    "column": "L",
-    "startRow": 9,
-    "diffRanges": 8,
-    "position": 3
-  },
   "WBQF": {
     "name": "WBQF",
     "nrMatches": 4,
@@ -38,6 +28,16 @@
     "startRow": 9,
     "diffRanges": 8,
     "position": 4
+  },
+  "LBQF+": {
+    "name": "LBQF+",
+    "nrMatches": 4,
+    "color": "#4169E1",
+    "sheet": "LoserBracket",
+    "column": "L",
+    "startRow": 9,
+    "diffRanges": 8,
+    "position": 3
   },
   "LBSF-": {
     "name": "LBSF-",
@@ -49,16 +49,6 @@
     "diffRanges": 8,
     "position": 5
   },
-  "LBSF+": {
-    "name": "LBSF+",
-    "nrMatches": 2,
-    "color": "#00BFFF",
-    "sheet": "LoserBracket",
-    "column": "T",
-    "startRow": 21,
-    "diffRanges": 8,
-    "position": 6
-  },
   "WBSF": {
     "name": "WBSF",
     "nrMatches": 2,
@@ -69,12 +59,23 @@
     "diffRanges": 8,
     "position": 7
   },
+  "LBSF+": {
+    "name": "LBSF+",
+    "nrMatches": 2,
+    "color": "#00BFFF",
+    "sheet": "LoserBracket",
+    "column": "T",
+    "startRow": 21,
+    "diffRanges": 8,
+    "position": 6
+  },
   "LBF": {
     "name": "LBF",
     "nrMatches": 1,
     "color": "#00FFFF",
     "sheet": "LoserBracket",
-    "startRange": "X27",
+    "column": "X",
+    "startRow": "27",
     "diffRanges": -1,
     "position": 8
   },
