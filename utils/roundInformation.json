@@ -3,110 +3,77 @@
     "name": "WB8F",
     "nrMatches": 8,
     "color": "#00FF7F",
-    "sheet": "WinnerBracket",
-    "column": "D",
-    "startRow": 6,
-    "diffRanges": 2,
+    "sheet": "WB8F",
     "position": 1
   },
   "LBQF-": {
     "name": "LBQF-",
     "nrMatches": 4,
     "color": "#000080",
-    "sheet": "LoserBracket",
-    "column": "H",
-    "startRow": 9,
-    "diffRanges": 8,
+    "sheet": "LBQF-",
     "position": 2
   },
   "WBQF": {
     "name": "WBQF",
     "nrMatches": 4,
     "color": "#00FF00",
-    "sheet": "WinnerBracket",
-    "column": "H",
-    "startRow": 9,
-    "diffRanges": 8,
-    "position": 4
+    "sheet": "WBQF",
+    "position": 3
   },
   "LBQF+": {
     "name": "LBQF+",
     "nrMatches": 4,
     "color": "#4169E1",
-    "sheet": "LoserBracket",
-    "column": "L",
-    "startRow": 9,
-    "diffRanges": 8,
-    "position": 3
+    "sheet": "LBQF+",
+    "position": 4
   },
   "LBSF-": {
     "name": "LBSF-",
     "nrMatches": 2,
     "color": "#87CEEB",
-    "sheet": "LoserBracket",
-    "column": "P",
-    "startRow": 21,
-    "diffRanges": 8,
+    "sheet": "LBSF-",
     "position": 5
   },
   "WBSF": {
     "name": "WBSF",
     "nrMatches": 2,
     "color": "#FFFF00",
-    "sheet": "WinnerBracket",
-    "column": "L",
-    "startRow": 21,
-    "diffRanges": 8,
-    "position": 7
+    "sheet": "WBSF",
+    "position": 6
   },
   "LBSF+": {
     "name": "LBSF+",
     "nrMatches": 2,
     "color": "#00BFFF",
-    "sheet": "LoserBracket",
-    "column": "T",
-    "startRow": 21,
-    "diffRanges": 8,
-    "position": 6
+    "sheet": "LBSF+",
+    "position": 7
   },
   "LBF": {
     "name": "LBF",
     "nrMatches": 1,
     "color": "#00FFFF",
-    "sheet": "LoserBracket",
-    "column": "X",
-    "startRow": "27",
-    "diffRanges": -1,
+    "sheet": "LBF",
     "position": 8
   },
   "WBF": {
     "name": "WBF",
     "nrMatches": 1,
     "color": "#FF8800",
-    "sheet": "WinnerBracket",
-    "column": "P",
-    "startRow": 27,
-    "diffRanges": -1,
+    "sheet": "WBF",
     "position": 9
   },
   "CF": {
     "name": "CF",
     "nrMatches": 1,
     "color": "#FA8072",
-    "sheet": "LoserBracket",
-    "column": "AB",
-    "startRow": 27,
-    "diffRanges": -1,
+    "sheet": "CF",
     "position": 10
   },
   "GF": {
     "name": "GF",
     "nrMatches": 1,
     "color": "#FF6347",
-    "sheet": "WinnerBracket",
-    "column": "T",
-    "startRow": 27,
-    "diffRanges": -1,
+    "sheet": "GF",
     "position": 11
   }
 }

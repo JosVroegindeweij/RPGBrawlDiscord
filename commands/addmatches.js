@@ -3,7 +3,8 @@ const Logger = require('../utils/logger');
 const GoogleIntegration = require('../utils/googleIntegration');
 const Admin = require('./admin');
 
-let rounds = require('../utils/roundInformation.json');
+const rounds = require('../utils/roundInformation.json');
+const alphabet = 'ABCDEFGH';
 
 async function execute(message, matches) {
     message.reply(`Attempting to create matches`)
@@ -37,9 +38,7 @@ async function makeRound(guild, round) {
     let spreadsheetID = spreadsheetData.spreadsheet;
     let loginRanges = [];
     for (let i = 0; i < round.nrMatches; i++) {
-        let range = round.sheet + '!';
-        let rangeStart = round.startRow + i * (4 + round.diffRanges);
-        range += round.column + rangeStart + ':' + round.column + (rangeStart + 3);
+        let range = round.sheet + '!' + alphabet[i] + '18:' + alphabet[i] + '21';
         loginRanges.push(range);
     }
 
@@ -58,7 +57,6 @@ async function makeMatches(guild, roundRole, matches) {
     let staffRole = guild.roles.cache.find(r => r.name.toLowerCase() === 'staff');
     let everyoneRole = guild.roles.everyone;
 
-    let alphabet = 'ABCDEFGH';
     matches = matches.map(match => match.values[0]);
 
     let matchCategory = await guild.channels.create(roundRole.name, {
