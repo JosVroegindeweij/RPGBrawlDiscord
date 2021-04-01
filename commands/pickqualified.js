@@ -67,7 +67,7 @@ async function determinePlayoffPlayers(guild) {
             `🇫🇷\n` +
             `Hey ${roleInformation.qualified}, vous êtes qualifié pour la phase des playoffs. ` +
             `Pour s'assurer que les matchs sont plein, nous voulons savoir si vous comptez jouer les playoffs. ` +
-            `Bien sur, ce n'est pas un problème si vous comptez jouer mais qu'un imprévu vous en empêche au dernier moment.\n\n` +
+            `Bien sûr, ce n'est pas un problème si vous comptez jouer mais qu'un imprévu vous en empêche au dernier moment.\n\n` +
             `Si vous voulez participer, réagissez à ce message avec ✅, si vous voulez vous désister, réagissez avec ❌.\n\n`
         );
 
@@ -115,7 +115,7 @@ async function determinePlayoffPlayers(guild) {
                                 return message.channel.send(
                                     `${replacement}\n` +
                                     `🇬🇧 Please read this message: \n` +
-                                    `🇫🇷 s'il vous plaît lis ce message:\n\n${message.url}`
+                                    `🇫🇷 S'il vous plaît lisez ce message:\n\n${message.url}`
                                 );
                             })
                             .catch(reason => Logger.error(reason, guild));

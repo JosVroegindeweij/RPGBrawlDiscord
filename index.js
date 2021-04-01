@@ -18,3 +18,8 @@ client.login(token)
 cmdHandler.initCommands(client);
 
 client.on('message', cmdHandler.onMessage.bind(null, client));
+
+process.on('unhandledRejection', error => {
+    Logger.error('Unhandled promise rejection:' + error, 'main');
+});
+
