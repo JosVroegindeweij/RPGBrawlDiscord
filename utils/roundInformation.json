@@ -4,76 +4,87 @@
     "nrMatches": 8,
     "color": "#00FF7F",
     "sheet": "WB8F",
-    "position": 1
+    "position": 1,
+    "deftimeSun": false
   },
   "LBQF-": {
     "name": "LBQF-",
     "nrMatches": 4,
     "color": "#000080",
     "sheet": "LBQF-",
-    "position": 2
+    "position": 2,
+    "deftimeSun": false
   },
   "WBQF": {
     "name": "WBQF",
     "nrMatches": 4,
     "color": "#00FF00",
     "sheet": "WBQF",
-    "position": 3
+    "position": 3,
+    "deftimeSun": false
   },
   "LBQF+": {
     "name": "LBQF+",
     "nrMatches": 4,
     "color": "#4169E1",
     "sheet": "LBQF+",
-    "position": 4
+    "position": 4,
+    "deftimeSun": true
   },
   "LBSF-": {
     "name": "LBSF-",
     "nrMatches": 2,
     "color": "#87CEEB",
     "sheet": "LBSF-",
-    "position": 5
+    "position": 5,
+    "deftimeSun": false
   },
   "WBSF": {
     "name": "WBSF",
     "nrMatches": 2,
     "color": "#FFFF00",
     "sheet": "WBSF",
-    "position": 6
+    "position": 6,
+    "deftimeSun": false
   },
   "LBSF+": {
     "name": "LBSF+",
     "nrMatches": 2,
     "color": "#00BFFF",
     "sheet": "LBSF+",
-    "position": 7
+    "position": 7,
+    "deftimeSun": true
   },
   "LBF": {
     "name": "LBF",
     "nrMatches": 1,
     "color": "#00FFFF",
     "sheet": "LBF",
-    "position": 8
+    "position": 8,
+    "deftimeSun": false
   },
   "WBF": {
     "name": "WBF",
     "nrMatches": 1,
     "color": "#FF8800",
     "sheet": "WBF",
-    "position": 9
+    "position": 9,
+    "deftimeSun": false
   },
   "CF": {
     "name": "CF",
     "nrMatches": 1,
     "color": "#FA8072",
     "sheet": "CF",
-    "position": 10
+    "position": 10,
+    "deftimeSun": false
   },
   "GF": {
     "name": "GF",
     "nrMatches": 1,
     "color": "#FF6347",
     "sheet": "GF",
-    "position": 11
+    "position": 11,
+    "deftimeSun": true
   }
 }
