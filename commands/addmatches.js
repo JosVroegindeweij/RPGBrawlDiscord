@@ -58,6 +58,7 @@ async function makeMatches(guild, round, roundRole, matches) {
 
     let matchCategory = await guild.channels.create(roundRole.name, {
         type: 'category',
+        position: 4,
         permissionOverwrites: [
             {
                 id: everyoneRole.id,
@@ -174,7 +175,7 @@ async function makeMatches(guild, round, roundRole, matches) {
                 `🇫🇷\n` +
                 `Hey ${roundRole}, vous êtes qualifié pour le prochain match.\n\n` +
                 `Ce channel est pour que vous décidiez d'une date de match entre vous 4. ` +
-                `Le jour et l'heure par défaut seront la dimanche à 20h CET et la seule facon ` +
+                `Le jour et l'heure par défaut seront le dimanche à 20h CET et la seule facon ` +
                 `pour que cela change et que tous les joueurs soient d'accord. ` +
                 `S'il y a des circonstances particulières, ping les ${staffRole} ` +
                 `et nous essaierons de les résoudre. ` +
