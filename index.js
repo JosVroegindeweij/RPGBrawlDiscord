@@ -14,13 +14,13 @@ client.once('ready', () => {
 
 client.login(token)
     .then(_ => info('Logged in', 'main'))
-    .catch(reason => _error(reason, 'main'));
+    .catch(reason => Logger.error(reason, 'main'));
 
-initCommands(client);
+cmdHandler.initCommands(client);
 
 client.on('messageCreate', onMessage.bind(null, client));
 
 process.on('unhandledRejection', error => {
-    _error('Unhandled promise rejection:' + error, 'main');
+    Logger.error('Unhandled promise rejection:' + error, 'main');
 });
 
