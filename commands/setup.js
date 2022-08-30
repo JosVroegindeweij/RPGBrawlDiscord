@@ -134,7 +134,7 @@ function getHelpMessage(guild, category, channels) {
         `If you do this, the ranking in ${channels[2]} will contain your discord nickname instead of your login.\n\n` +
         `If you have any questions or anything is unclear, you can ask questions here.\n\n` +
         `🇫🇷\n` +
-        `Voici la catégorie bot du RPG Brawl.`  +
+        `Voici la catégorie bot du RPG Brawl. `  +
         `Il y a 2 channels: ${channels[2]} et ${channels[3]}.\n\n` +
         `Dans ${channels[2]}, il y aura les leaderboards TA actuels. `  +
         `Ils sont mis à jour toutes les 10 minutes, de la même manière que la spreadsheet.\n\n` +
