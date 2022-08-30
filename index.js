@@ -18,7 +18,7 @@ client.login(token)
 
 cmdHandler.initCommands(client);
 
-client.on('messageCreate', onMessage.bind(null, client));
+client.on('messageCreate', cmdHandler.onMessage.bind(null, client));
 
 process.on('unhandledRejection', error => {
     Logger.error('Unhandled promise rejection:' + error, 'main');
