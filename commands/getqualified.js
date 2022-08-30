@@ -27,10 +27,7 @@ async function execute(message) {
     let avgRange = avg.range;
 
     let func = execute_requests
-        .bind(null, message.channel)
-        .bind(null, spreadsheetID)
-        .bind(null, loginRange)
-        .bind(null, avgRange);
+        .bind(null, message.channel, spreadsheetID, loginRange, avgRange);
 
     if (!scheduledTask[message.channel.id]) {
         scheduledTask[message.channel.id] = setInterval(func, 600 * 1000);

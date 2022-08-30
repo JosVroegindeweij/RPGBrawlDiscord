@@ -1,7 +1,7 @@
 const Logger = require('../utils/logger');
 const dbHandler = require('../utils/databaseHandler');
 const Admin = require('./admin')
-const {Permissions} = require("discord.js");
+const {PermissionsBitField} = require("discord.js");
 
 async function execute(message, args) {
     let guild = message.guild;
@@ -18,29 +18,34 @@ async function execute(message, args) {
     let channelManager = guild.channels;
     let permissionsOverwrite = await getPermissionOverwrites(guild);
 
-    channelManager.create('RPG Brawl bot', {
+    channelManager.create({
+        name: 'RPG Brawl bot',
         type: 'CATEGORY'
     })
         .then(category => {
             Logger.info(`Created bot channel category (${category.id})`, guild);
             Promise.all([
-                channelManager.create('help', {
+                channelManager.create({
+                    name: 'help',
                     topic: 'Channel to get help/explanations with/of commands',
                     parent: category
                 }),
-                channelManager.create('staff', {
+                channelManager.create({
+                    name: 'staff',
                     topic: 'Staff commands' +
                         buildTopic(message.client.commands, 'staff'),
                     parent: category,
                     permissionOverwrites: permissionsOverwrite['staff']
                 }),
-                channelManager.create('ta-standings', {
+                channelManager.create({
+                    name: 'ta-standings',
                     topic: 'TA standings updates' +
                         buildTopic(message.client.commands, 'ta-standings'),
                     parent: category,
                     permissionOverwrites: permissionsOverwrite['ta-standings']
                 }),
-                channelManager.create('linking', {
+                channelManager.create({
+                    name: 'linking',
                     topic: 'Linking trackmania logins with discord users' +
                         buildTopic(message.client.commands, 'linking'),
                     parent: category
@@ -91,29 +96,29 @@ async function getPermissionOverwrites(guild) {
         'staff': [
             {
                 id: everyone_role.id,
-                deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             },
             {
                 id: bot_role.id,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             },
             ...adminIds.map(admin => ({
                 id: admin,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             }))
         ],
         'ta-standings': [
             {
                 id: everyone_role.id,
-                deny: [Permissions.FLAGS.SEND_MESSAGES]
+                deny: [PermissionsBitField.Flags.SendMessages]
             },
             {
                 id: bot_role.id,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             },
             ...adminIds.map(admin => ({
                 id: admin,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             }))
         ]
     };

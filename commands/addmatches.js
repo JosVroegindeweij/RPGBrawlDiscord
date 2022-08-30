@@ -4,7 +4,7 @@ const GoogleIntegration = require('../utils/googleIntegration');
 const Admin = require('./admin');
 
 const rounds = require('../utils/roundInformation.json');
-const {Permissions} = require("discord.js");
+const {PermissionsBitField} = require("discord.js");
 const alphabet = 'ABCDEFGH';
 
 async function execute(message, matches) {
@@ -56,25 +56,26 @@ async function makeMatches(guild, round, roundRole, matches) {
 
     matches = matches.map(match => match.values[0]);
 
-    let matchCategory = await guild.channels.create(roundRole.name, {
+    let matchCategory = await guild.channels.create({
+        name: roundRole.name,
         type: 'CATEGORY',
         position: 4,
         permissionOverwrites: [
             {
                 id: everyoneRole.id,
-                deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             },
             {
                 id: roundRole.id,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             },
             {
                 id: botRole.id,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             },
             ...adminIds.map(admin => ({
                 id: admin,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             }))
         ]
     });
@@ -83,28 +84,29 @@ async function makeMatches(guild, round, roundRole, matches) {
         let matchName = roundRole.name + '-' + alphabet[i];
         let matchRole = await guild.roles.create({ name: matchName });
 
-        let matchChannel = await guild.channels.create(matchName, {
+        let matchChannel = await guild.channels.create({
+            name: matchName,
             parent: matchCategory,
             permissionOverwrites: [
                 {
                     id: everyoneRole.id,
-                    deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                    deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
                 },
                 {
                     id: roundRole.id,
-                    deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                    deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
                 },
                 {
                     id: matchRole.id,
-                    allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
                 },
                 {
                     id: botRole.id,
-                    allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
                 },
                 ...adminIds.map(admin => ({
                     id: admin,
-                    allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                    allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
                 }))
             ]
         });

@@ -2,7 +2,7 @@ const dbHandler = require('../utils/databaseHandler');
 const Logger = require('../utils/logger');
 const GoogleIntegration = require('../utils/googleIntegration');
 const Admin = require('./admin');
-const {Permissions} = require("discord.js");
+const {PermissionsBitField} = require("discord.js");
 
 let members = [];
 let nrQualified = 32;
@@ -164,27 +164,27 @@ async function getRolesAndPermissionOverwrites(guild) {
         permissionOverwrites: [
             {
                 id: everyone_role,
-                deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             },
             {
                 id: qualified,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             },
             {
                 id: playoffs,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             },
             {
                 id: dropouts,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             },
             {
                 id: bot_role,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             },
             ...adminIds.map(admin => ({
                 id: admin,
-                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+                allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
             }))
         ]
     }

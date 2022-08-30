@@ -8,7 +8,7 @@ const Admin = require('../commands/admin');
 const Setup = require('../commands/setup');
 
 const {prefix} = require('../secrets/config.json');
-const {Permissions} = require("discord.js");
+const {PermissionsBitField} = require("discord.js");
 
 function initCommands(client) {
     client.commands = new Discord.Collection();
@@ -35,7 +35,7 @@ async function onMessage(client, message) {
 
 
     // Admin permission check
-    let isGlobalAdmin = message.member.permissions.any(Permissions.FLAGS.ADMINISTRATOR);
+    let isGlobalAdmin = message.member.permissions.any(PermissionsBitField.Flags.ADMINISTRATOR);
     if (command.admin && !(isGlobalAdmin || (await Admin.isAdmin(message.member)))) {
         Logger.info(`User '${message.member.displayName}'(${message.member.id}) ` +
             `tried to use command '${message}' (in channel '${message.channel.name})'`, message.guild);

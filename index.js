@@ -1,26 +1,26 @@
-const { Client, Intents } = require('discord.js');
+import { Client, Intents } from 'discord.js';
 
-const Logger = require('./utils/logger');
-const cmdHandler = require('./utils/commandHandler');
+import { info, error as _error } from './utils/logger';
+import { initCommands, onMessage } from './utils/commandHandler';
 
-const {token} = require('./secrets/config.json');
+import { token } from './secrets/config.json';
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_MESSAGE_REACTIONS]});
+        Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.MESSAGE_CONTENT]});
 
 client.once('ready', () => {
-    Logger.info('Bot launched!', 'main');
+    info('Bot launched!', 'main');
 });
 
 client.login(token)
-    .then(_ => Logger.info('Logged in', 'main'))
-    .catch(reason => Logger.error(reason, 'main'));
+    .then(_ => info('Logged in', 'main'))
+    .catch(reason => _error(reason, 'main'));
 
-cmdHandler.initCommands(client);
+initCommands(client);
 
-client.on('messageCreate', cmdHandler.onMessage.bind(null, client));
+client.on('messageCreate', onMessage.bind(null, client));
 
 process.on('unhandledRejection', error => {
-    Logger.error('Unhandled promise rejection:' + error, 'main');
+    _error('Unhandled promise rejection:' + error, 'main');
 });
 
