@@ -13,7 +13,7 @@ client.once('ready', () => {
 });
 
 client.login(token)
-    .then(_ => info('Logged in', 'main'))
+    .then(_ => Logger.info('Logged in', 'main'))
     .catch(reason => Logger.error(reason, 'main'));
 
 cmdHandler.initCommands(client);
