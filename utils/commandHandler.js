@@ -35,7 +35,7 @@ async function onMessage(client, message) {
 
 
     // Admin permission check
-    let isGlobalAdmin = message.member.permissions.any(PermissionsBitField.Flags.ADMINISTRATOR);
+    let isGlobalAdmin = message.member.permissions.any(PermissionsBitField.Flags.Administrator);
     if (command.admin && !(isGlobalAdmin || (await Admin.isAdmin(message.member)))) {
         Logger.info(`User '${message.member.displayName}'(${message.member.id}) ` +
             `tried to use command '${message}' (in channel '${message.channel.name})'`, message.guild);
