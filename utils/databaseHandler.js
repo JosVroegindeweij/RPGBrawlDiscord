@@ -10,7 +10,7 @@ const knex = require('knex')({
         password: db_password,
         database: db_name
     },
-    debug: true,
+    debug: false,
     asyncStackTraces: true
 });
 
