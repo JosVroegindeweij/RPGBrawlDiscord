@@ -1,9 +1,9 @@
-import { Client, Intents } from 'discord.js';
+const { Client, Intents } = require('discord.js');
 
-import { info, error as _error } from './utils/logger';
-import { initCommands, onMessage } from './utils/commandHandler';
+const Logger = require('./utils/logger');
+const cmdHandler = require('./utils/commandHandler');
 
-import { token } from './secrets/config.json';
+const {token} = require('./secrets/config.json');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES,
         Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.MESSAGE_CONTENT]});
