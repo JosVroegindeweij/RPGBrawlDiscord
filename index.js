@@ -5,8 +5,8 @@ const cmdHandler = require('./utils/commandHandler');
 
 const {token} = require('./secrets/config.json');
 
-const client = new Client({ intents: [GatewayIntentBits.GUILDS, GatewayIntentBits.GUILD_MESSAGES,
-        GatewayIntentBits.GUILD_MESSAGE_REACTIONS, GatewayIntentBits.MESSAGE_CONTENT]});
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.MessageContent]});
 
 client.once('ready', () => {
     info('Bot launched!', 'main');
