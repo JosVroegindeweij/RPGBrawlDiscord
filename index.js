@@ -9,7 +9,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
         GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.MessageContent]});
 
 client.once('ready', () => {
-    info('Bot launched!', 'main');
+    Logger.info('Bot launched!', 'main');
 });
 
 client.login(token)
