@@ -58,11 +58,12 @@ async function getActiveAdmins(guild) {
     let adminIds = (await dbHandler.getAdmins(guild)).map(adm => adm.admin);
     // Fetch all admins to make sure they are in cache
     Logger.info('lets try');
-    Logger.info(await guild.members.fetch({user: adminIds}));
-    Logger.info((await guild.members.fetch({user: adminIds}))?.values())
-    Logger.info([...(await guild.members.fetch({user: adminIds}))?.values()])
-    const adminUsersInGuild = [...(await guild.members.fetch({user: adminIds}))?.values()] ?? [];
-    const adminRolesInGuild = [...(await guild.roles.fetch({user: adminIds}))?.values()] ?? [];
+    Logger.info(await guild.roles.fetch({user: adminIds}));
+    Logger.info((await guild.roles.fetch({user: adminIds}))?.values() ?? [])
+    Logger.info([...(await guild.roles.fetch({user: adminIds}))?.values() ?? []])
+    Logger.info([...(await guild.members.fetch({user: adminIds}))?.values() ?? []])
+    const adminUsersInGuild = [...(await guild.members.fetch({user: adminIds}))?.values() ?? []];
+    const adminRolesInGuild = [...(await guild.roles.fetch({user: adminIds}))?.values() ?? []];
 
     // Remove admins that left the guild
     let activeAdmins = adminUsersInGuild
