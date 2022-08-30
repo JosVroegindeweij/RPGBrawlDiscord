@@ -6,6 +6,12 @@ const {PermissionsBitField} = require("discord.js");
 async function execute(message, args) {
     let guild = message.guild;
 
+    Logger.info('Time to fetch channels from db');
+    Logger.info('Guild is: ' + guild.id);
+    let temp = dbHandler.getChannels(guild);
+    Logger.info('Knex returned: ' + temp)
+
+
     if ((await dbHandler.getChannels(guild))?.category &&
         (!(args.includes('--force') || args.includes('-f')))) {
         message.reply(`This server already has a bot category.`)
