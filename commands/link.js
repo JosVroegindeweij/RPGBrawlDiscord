@@ -28,11 +28,9 @@ async function execute(message, args) {
 
     if (!linkedRole) {
         message.guild.roles.create({
-            data: {
-                name: 'linked',
-                color: 'DEFAULT',
-                permissions: 0,
-            }
+            name: 'linked',
+            color: 'DEFAULT',
+            permissions: 0n
         })
             .then(role => {
                 addUserToRole(message, login, member, role);

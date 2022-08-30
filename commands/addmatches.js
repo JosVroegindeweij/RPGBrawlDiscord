@@ -4,6 +4,7 @@ const GoogleIntegration = require('../utils/googleIntegration');
 const Admin = require('./admin');
 
 const rounds = require('../utils/roundInformation.json');
+const {Permissions} = require("discord.js");
 const alphabet = 'ABCDEFGH';
 
 async function execute(message, matches) {
@@ -24,13 +25,12 @@ async function execute(message, matches) {
 async function makeRound(guild, round) {
     let playoffsRolePosition = guild.roles.cache.find(r => r.name === 'playoffs').position;
     let roundRole = await guild.roles.create({
-        data: {
-            name: round.name,
-            color: round.color,
-            hoist: true,
-            position: playoffsRolePosition + round.position
-        }
-    });
+        name: round.name,
+        color: round.color,
+        hoist: true,
+        position: playoffsRolePosition + round.position
+    }
+    );
 
     let spreadsheetData = (await dbHandler.getSpreadsheetRange(guild, 'login'))[0];
     let spreadsheetID = spreadsheetData.spreadsheet;
@@ -81,11 +81,7 @@ async function makeMatches(guild, round, roundRole, matches) {
 
     for (let i = 0; i < matches.length; i++) {
         let matchName = roundRole.name + '-' + alphabet[i];
-        let matchRole = await guild.roles.create({
-            data: {
-                name: matchName
-            }
-        });
+        let matchRole = await guild.roles.create({ name: matchName });
 
         let matchChannel = await guild.channels.create(matchName, {
             parent: matchCategory,

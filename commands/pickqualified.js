@@ -2,6 +2,7 @@ const dbHandler = require('../utils/databaseHandler');
 const Logger = require('../utils/logger');
 const GoogleIntegration = require('../utils/googleIntegration');
 const Admin = require('./admin');
+const {Permissions} = require("discord.js");
 
 let members = [];
 let nrQualified = 32;
@@ -73,15 +74,15 @@ async function determinePlayoffPlayers(guild) {
         );
 
         const filterAccept = (reaction, user) => !user.bot && reaction.emoji.name === '✅' &&
-            !guild.member(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
+            !guild.members.cache.get(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
         const filterDeny = (reaction, user) => !user.bot && reaction.emoji.name === '❌' &&
-            !guild.member(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
+            !guild.members.cache.get(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
 
         const collectorAccept = message.createReactionCollector(filterAccept);
         const collectorDeny = message.createReactionCollector(filterDeny);
 
         collectorAccept.on('collect', (_, user) => {
-            const member = guild.member(user);
+            const member = guild.member.cache.get(user);
             if (member) {
                 member.roles.remove(roleInformation.qualified)
                     .then(member => member.roles.add(roleInformation.playoffs))
@@ -90,21 +91,21 @@ async function determinePlayoffPlayers(guild) {
         });
 
         collectorDeny.on('collect', (_, user) => {
-            const member = guild.member(user);
+            const member = guild.member.cache.get(user);
             message.channel.send(
                 `${member}\n 🇬🇧 Are you sure you want to drop out?\n` +
                 `🇫🇷 Etes vous sur de vouloir vous désister?\n`
             ).then(confirmation => {
-                const filterAcceptMember = (reaction, user) => member === guild.member(user) && reaction.emoji.name === '✅' &&
-                    !guild.member(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
-                const filterDenyMember = (reaction, user) => member === guild.member(user) && reaction.emoji.name === '❌' &&
-                    !guild.member(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
+                const filterAcceptMember = (reaction, user) => member === guild.member.cache.get(user) && reaction.emoji.name === '✅' &&
+                    !guild.member.cache.get(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
+                const filterDenyMember = (reaction, user) => member === guild.member.cache.get(user) && reaction.emoji.name === '❌' &&
+                    !guild.member.cache.get(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
 
                 const collectorConfirmationAccept = confirmation.createReactionCollector({filter: filterAcceptMember});
                 const collectorConfirmationDeny = confirmation.createReactionCollector({filter: filterDenyMember});
 
                 collectorConfirmationAccept.on('collect', (_, user) => {
-                    const member = guild.member(user);
+                    const member = guild.member.cache.get(user);
                     if (member) {
                         member.roles.remove(roleInformation.qualified)
                             .then(member => member.roles.add(roleInformation.dropouts))
@@ -145,26 +146,16 @@ async function getRolesAndPermissionOverwrites(guild) {
     let everyone_role = guild.roles.everyone;
     let bot_role = guild.roles.cache.find(r => r.name.toLowerCase() === 'rpg brawl bot');
 
-    let qualified = await guild.roles.create({
-        data: {
-            name: 'qualified'
-        }
-    });
+    let qualified = await guild.roles.create({ name: 'qualified' });
 
     let playoffs = await guild.roles.create({
-        data: {
-            name: 'playoffs',
-            color: 'YELLOW',
-            hoist: true,
-            position: 6
-        }
+        name: 'playoffs',
+        color: 'YELLOW',
+        hoist: true,
+        position: 6
     });
 
-    let dropouts = await guild.roles.create({
-        data: {
-            name: 'dropouts'
-        }
-    });
+    let dropouts = await guild.roles.create({ name: 'dropouts' });
 
     return {
         qualified: qualified,

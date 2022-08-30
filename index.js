@@ -1,11 +1,12 @@
-const Discord = require('discord.js');
+const { Client, Intents } = require('discord.js');
 
 const Logger = require('./utils/logger');
 const cmdHandler = require('./utils/commandHandler');
 
 const {token} = require('./secrets/config.json');
 
-const client = new Discord.Client({intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Discord.Intents.FLAGS.MESSAGE_CONTENT});
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_MESSAGE_REACTIONS]});
 
 client.once('ready', () => {
     Logger.info('Bot launched!', 'main');
