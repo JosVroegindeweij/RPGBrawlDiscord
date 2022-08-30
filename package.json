@@ -12,7 +12,7 @@
   "dependencies": {
     "ascii-table": "0.0.9",
     "discord.js": "^14.3.0",
-    "googleapis": "^39.2.0",
+    "googleapis": "^107.0.0",
     "knex": "^0.21.16",
     "lodash": "^4.17.21",
     "mysql": "^2.18.1",
