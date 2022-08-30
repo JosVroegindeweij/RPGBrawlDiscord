@@ -14,22 +14,22 @@ function execute(message) {
             let staff = guild.channels.cache.get(channels['staff']);
             let ta = guild.channels.cache.get(channels['ta_standings']);
             message.mentions.users.forEach(user => {
-                staff?.permissionsOverwrites.edit(user, {
-                    'VIEW_CHANNEL': true,
-                    'SEND_MESSAGE': true
-                });
-                ta?.permissionsOverwrites.edit(user, {
-                    'SEND_MESSAGE': true
-                })
+                staff?.permissionsOverwrites.edit(user, [
+                    'VIEW_CHANNEL',
+                    'SEND_MESSAGE'
+                ]);
+                ta?.permissionsOverwrites.edit(user, [
+                    'SEND_MESSAGE'
+                ])
             });
             message.mentions.roles.forEach(role => {
-                staff?.permissionsOverwrites.edit(role, {
-                    'VIEW_CHANNEL': true,
-                    'SEND_MESSAGE': true
-                });
-                ta?.permissionsOverwrites.edit(role, {
-                    'SEND_MESSAGE': true
-                });
+                staff?.permissionsOverwrites.edit(role, [
+                    'VIEW_CHANNEL',
+                    'SEND_MESSAGE'
+                ]);
+                ta?.permissionsOverwrites.edit(role, [
+                    'SEND_MESSAGE'
+                ]);
             });
         });
 }
