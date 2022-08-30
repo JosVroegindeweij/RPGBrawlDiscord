@@ -1,7 +1,7 @@
 const Logger = require('../utils/logger');
 const dbHandler = require('../utils/databaseHandler');
 const Admin = require('./admin')
-const {PermissionsBitField} = require("discord.js");
+const {PermissionsBitField, ChannelType} = require("discord.js");
 
 async function execute(message, args) {
     let guild = message.guild;
@@ -20,7 +20,7 @@ async function execute(message, args) {
 
     channelManager.create({
         name: 'RPG Brawl bot',
-        type: 'CATEGORY'
+        type: ChannelType.GuildCategory
     })
         .then(category => {
             Logger.info(`Created bot channel category (${category.id})`, guild);
