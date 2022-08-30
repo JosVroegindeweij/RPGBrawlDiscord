@@ -4,7 +4,7 @@ const GoogleIntegration = require('../utils/googleIntegration');
 const Admin = require('./admin');
 
 const rounds = require('../utils/roundInformation.json');
-const {PermissionsBitField} = require("discord.js");
+const {PermissionsBitField, ChannelType} = require("discord.js");
 const alphabet = 'ABCDEFGH';
 
 async function execute(message, matches) {
@@ -58,7 +58,7 @@ async function makeMatches(guild, round, roundRole, matches) {
 
     let matchCategory = await guild.channels.create({
         name: roundRole.name,
-        type: 'CATEGORY',
+        type: ChannelType.GuildCategory,
         position: 4,
         permissionOverwrites: [
             {
