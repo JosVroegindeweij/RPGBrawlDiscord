@@ -53,7 +53,8 @@ async function determinePlayoffPlayers(guild) {
             await member.roles.add(roleInformation.qualified);
         }
 
-        let channel = await channelManager.create('qualified', {
+        let channel = await channelManager.create({
+            name: 'qualified',
             topic: 'Channel for qualified people to decide whether they want to be qualified',
             parent: category,
             permissionOverwrites: roleInformation.permissionOverwrites
@@ -99,8 +100,8 @@ async function determinePlayoffPlayers(guild) {
                 const filterDenyMember = (reaction, user) => member === guild.member(user) && reaction.emoji.name === '❌' &&
                     !guild.member(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
 
-                const collectorConfirmationAccept = confirmation.createReactionCollector(filterAcceptMember);
-                const collectorConfirmationDeny = confirmation.createReactionCollector(filterDenyMember);
+                const collectorConfirmationAccept = confirmation.createReactionCollector({filter: filterAcceptMember});
+                const collectorConfirmationDeny = confirmation.createReactionCollector({filter: filterDenyMember});
 
                 collectorConfirmationAccept.on('collect', (_, user) => {
                     const member = guild.member(user);
@@ -172,27 +173,27 @@ async function getRolesAndPermissionOverwrites(guild) {
         permissionOverwrites: [
             {
                 id: everyone_role,
-                deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             },
             {
                 id: qualified,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             },
             {
                 id: playoffs,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             },
             {
                 id: dropouts,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             },
             {
                 id: bot_role,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             },
             ...adminIds.map(admin => ({
                 id: admin,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             }))
         ]
     }

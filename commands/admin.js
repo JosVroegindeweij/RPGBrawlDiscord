@@ -57,8 +57,8 @@ async function isAdmin(guildMember) {
 async function getActiveAdmins(guild) {
     let adminIds = (await dbHandler.getAdmins(guild)).map(adm => adm.admin);
     // Fetch all admins to make sure they are in cache
-    const adminUsersInGuild = (await guild.members.fetch({user: adminIds}))?.array() ?? [];
-    const adminRolesInGuild = (await guild.roles.fetch({user: adminIds}))?.array() ?? [];
+    const adminUsersInGuild = [...(await guild.members.fetch({user: adminIds}))?.values()] ?? [];
+    const adminRolesInGuild = [...(await guild.roles.fetch({user: adminIds}))?.values()] ?? [];
 
     // Remove admins that left the guild
     let activeAdmins = adminUsersInGuild

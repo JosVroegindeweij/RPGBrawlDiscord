@@ -57,24 +57,24 @@ async function makeMatches(guild, round, roundRole, matches) {
     matches = matches.map(match => match.values[0]);
 
     let matchCategory = await guild.channels.create(roundRole.name, {
-        type: 'category',
+        type: 'CATEGORY',
         position: 4,
         permissionOverwrites: [
             {
                 id: everyoneRole.id,
-                deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             },
             {
                 id: roundRole.id,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             },
             {
                 id: botRole.id,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             },
             ...adminIds.map(admin => ({
                 id: admin,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             }))
         ]
     });
@@ -92,23 +92,23 @@ async function makeMatches(guild, round, roundRole, matches) {
             permissionOverwrites: [
                 {
                     id: everyoneRole.id,
-                    deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                    deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
                 },
                 {
                     id: roundRole.id,
-                    deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                    deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
                 },
                 {
                     id: matchRole.id,
-                    allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                    allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
                 },
                 {
                     id: botRole.id,
-                    allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                    allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
                 },
                 ...adminIds.map(admin => ({
                     id: admin,
-                    allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                    allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
                 }))
             ]
         });

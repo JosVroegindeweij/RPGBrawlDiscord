@@ -18,7 +18,7 @@ async function execute(message, args) {
     let permissionsOverwrite = await getPermissionOverwrites(guild);
 
     channelManager.create('RPG Brawl bot', {
-        type: 'category'
+        type: 'CATEGORY'
     })
         .then(category => {
             Logger.info(`Created bot channel category (${category.id})`, guild);
@@ -90,29 +90,29 @@ async function getPermissionOverwrites(guild) {
         'staff': [
             {
                 id: everyone_role.id,
-                deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                deny: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             },
             {
                 id: bot_role.id,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             },
             ...adminIds.map(admin => ({
                 id: admin,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             }))
         ],
         'ta-standings': [
             {
                 id: everyone_role.id,
-                deny: ['SEND_MESSAGES']
+                deny: [Permissions.FLAGS.SEND_MESSAGES]
             },
             {
                 id: bot_role.id,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             },
             ...adminIds.map(admin => ({
                 id: admin,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+                allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
             }))
         ]
     };
