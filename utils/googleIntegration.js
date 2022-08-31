@@ -20,7 +20,7 @@ async function loadSavedCredentialsIfExist() {
         const credentials = JSON.parse(content);
         return google.auth.fromJSON(credentials);
     } catch (err) {
-        Logger.error('Error loading token file:' + err, 'SPREADSHEETS');
+        Logger.info('Error loading token file:' + err, 'SPREADSHEETS');
         return null;
     }
 }
@@ -46,9 +46,7 @@ function call(func, args) {
 
     loadSavedCredentialsIfExist()
         .then((cred) => {
-            if (!cred) return;
-            Logger.info(cred);
-            Logger.info('No token file existed', 'SPREADSHEETS');
+            Logger.info('Loaded credentials: ' + cred, 'SPREADSHEET');
             authorize(cred, func);
         });
 }
@@ -83,20 +81,20 @@ function getBatch(spreadsheetId, ranges, callback, auth) {
 async function authorize(cred, func) {
     let client = cred;
     if (client) {
-        Logger.info('client exists');
+        Logger.info('client exists', 'SPREADSHEETS');
         return client;
     }
-    Logger.info('authenticating');
+    Logger.info('authenticating', 'SPREADSHEETS');
     client = await authenticate({
         scopes: SCOPES,
         keyfilePath: CREDENTIALS_PATH,
     });
     Logger.info('authenticated' + client);
     if (client.credentials) {
-        Logger.info('Saving credentials');
+        Logger.info('Saving credentials', 'SPREADSHEETS');
         await saveCredentials(client);
     }
-    Logger.info('calling actual function');
+    Logger.info('calling actual function', 'SPREADSHEETS');
     func();
 }
 
