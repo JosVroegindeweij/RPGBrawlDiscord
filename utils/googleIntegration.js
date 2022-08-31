@@ -78,15 +78,20 @@ function getBatch(spreadsheetId, ranges, callback, auth) {
 async function authorize(cred, func) {
     let client = cred;
     if (client) {
+        Logger.info('client exists');
         return client;
     }
+    Logger.info('authenticating');
     client = await authenticate({
         scopes: SCOPES,
         keyfilePath: CREDENTIALS_PATH,
     });
+    Logger.info('authenticated' + client);
     if (client.credentials) {
+        Logger.info('Saving credentials');
         await saveCredentials(client);
     }
+    Logger.info('calling actual function');
     func();
 }
 
