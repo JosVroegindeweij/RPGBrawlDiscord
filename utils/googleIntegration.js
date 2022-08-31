@@ -1,5 +1,7 @@
 const fs = require('fs').promises;
-const {authenticate} = require('google-auth-library');
+const path = require('path');
+const process = require('process');
+const {authenticate} = require('@google-cloud/local-auth');
 const {google} = require('googleapis');
 
 const Logger = require('./logger');
@@ -9,9 +11,9 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const CREDENTIALS_PATH = 'secrets/credentials.json';
-const TOKEN_PATH = 'secrets/token.json';
-  
+const CREDENTIALS_PATH = path.join(process.cwd(), 'secrets/credentials.json');
+const TOKEN_PATH = path.join(process.cwd(), 'secrets/token.json');
+
 async function loadSavedCredentialsIfExist() {
     try {
         const content = await fs.readFile(TOKEN_PATH);
@@ -41,11 +43,14 @@ function call(func, args) {
     for (arg of args) {
         func = func.bind(null, arg);
     }
-    
-    if (cred = loadSavedCredentialsIfExist()) {
-        Logger.info('No token file existed', 'SPREADSHEETS');
-        authorize(cred, func);
-    }
+
+    loadSavedCredentialsIfExist()
+        .then((cred) => {
+            if (!cred) return;
+            Logger.info(cred);
+            Logger.info('No token file existed', 'SPREADSHEETS');
+            authorize(cred, func);
+        });
 }
 
 function getRange(spreadsheetId, range, callback, auth) {
