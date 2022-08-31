@@ -18,7 +18,7 @@ async function loadSavedCredentialsIfExist() {
         const credentials = JSON.parse(content);
         return google.auth.fromJSON(credentials);
     } catch (err) {
-        Logger.error('Error loading client secret file:' + err, 'SPREADSHEETS');
+        Logger.error('Error loading token file:' + err, 'SPREADSHEETS');
         return null;
     }
 }
@@ -43,6 +43,7 @@ function call(func, args) {
     }
     
     if (cred = loadSavedCredentialsIfExist()) {
+        Logger.info('No token file existed', 'SPREADSHEETS');
         authorize(cred, func);
     }
 }
