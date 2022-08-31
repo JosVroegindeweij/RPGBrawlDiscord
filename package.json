@@ -10,9 +10,11 @@
   "author": "Space Programs",
   "license": "MIT",
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
     "ascii-table": "0.0.9",
     "discord.js": "^14.3.0",
-    "googleapis": "^39.2.0",
+    "google-auth-library": "^8.5.0",
+    "googleapis": "^105.0.0",
     "knex": "^0.21.16",
     "lodash": "^4.17.21",
     "mysql": "^2.18.1",

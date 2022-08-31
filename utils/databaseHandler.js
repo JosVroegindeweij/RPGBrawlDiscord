@@ -32,7 +32,6 @@ function saveChannels(guild, category, help, staff, ta_standings, linking) {
 }
 
 async function getChannels(guild) {
-    Logger.info(guild, ' getting channels');
     return (await knex('channel')
         .where('guild', guild.id))[0];
 }

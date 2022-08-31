@@ -1,6 +1,5 @@
-const fs = require('fs');
-const readline = require('readline');
-
+const fs = require('fs').promises;
+const {authenticate} = require('google-auth-library');
 const {google} = require('googleapis');
 
 const Logger = require('./logger');
@@ -10,19 +9,42 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
+const CREDENTIALS_PATH = 'secrets/credentials.json';
 const TOKEN_PATH = 'secrets/token.json';
+  
+async function loadSavedCredentialsIfExist() {
+    try {
+        const content = await fs.readFile(TOKEN_PATH);
+        const credentials = JSON.parse(content);
+        return google.auth.fromJSON(credentials);
+    } catch (err) {
+        Logger.error('Error loading client secret file:' + err, 'SPREADSHEETS');
+        return null;
+    }
+}
+
+async function saveCredentials(client) {
+    const content = await fs.readFile(CREDENTIALS_PATH);
+    const keys = JSON.parse(content);
+    const key = keys.installed || keys.web;
+    const payload = JSON.stringify({
+        type: 'authorized_user',
+        client_id: key.client_id,
+        client_secret: key.client_secret,
+        refresh_token: client.credentials.refresh_token,
+    });
+    await fs.writeFile(TOKEN_PATH, payload);
+}
 
 
 function call(func, args) {
     for (arg of args) {
         func = func.bind(null, arg);
     }
-    fs.readFile('secrets/credentials.json', (err, content) => {
-        if (err) return Logger.error('Error loading client secret file:' + err, 'SPREADSHEETS');
-        // Authorize a client with credentials, then call the Google Sheets API.
-        // authorize(JSON.parse(content), listMajors);
-        authorize(JSON.parse(content), func);
-    });
+    
+    if (cred = loadSavedCredentialsIfExist()) {
+        authorize(cred, func);
+    }
 }
 
 function getRange(spreadsheetId, range, callback, auth) {
@@ -52,55 +74,19 @@ function getBatch(spreadsheetId, ranges, callback, auth) {
     });
 }
 
-/**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
-function authorize(credentials, callback) {
-    const {client_secret, client_id, redirect_uris} = credentials.installed;
-    const oAuth2Client = new google.auth.OAuth2(
-        client_id, client_secret, redirect_uris[0]);
-
-    // Check if we have previously stored a token.
-    fs.readFile(TOKEN_PATH, (err, token) => {
-        if (err) return getNewToken(oAuth2Client, callback);
-        oAuth2Client.setCredentials(JSON.parse(token));
-        callback(oAuth2Client); // Add other args
+async function authorize(cred, func) {
+    let client = cred;
+    if (client) {
+        return client;
+    }
+    client = await authenticate({
+        scopes: SCOPES,
+        keyfilePath: CREDENTIALS_PATH,
     });
-}
-
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
-function getNewToken(oAuth2Client, callback) {
-    const authUrl = oAuth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: SCOPES,
-    });
-    Logger.info('Authorize this app by visiting this url:' + authUrl, 'SPREADSHEETS');
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
-    rl.question('Enter the code from that page here: ', (code) => {
-        rl.close();
-        oAuth2Client.getToken(code, (err, token) => {
-            if (err)
-                return Logger.error('Error while trying to retrieve access token' + err, 'SPREADSHEETS');
-            oAuth2Client.setCredentials(token);
-            // Store the token to disk for later program executions
-            fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-                if (err) return Logger.error(err, 'SPREADSHEETS');
-                Logger.info('Token stored to' + TOKEN_PATH, 'SPREADSHEETS');
-            });
-            callback(oAuth2Client);
-        });
-    });
+    if (client.credentials) {
+        await saveCredentials(client);
+    }
+    func();
 }
 
 module.exports = {
