@@ -38,7 +38,7 @@ async function onMessage(client, message) {
     let isGlobalAdmin = message.member.permissions.any(PermissionsBitField.Flags.Administrator);
     if (command.admin && !(isGlobalAdmin || (await Admin.isAdmin(message.member)))) {
         Logger.info(`User '${message.member.displayName}'(${message.member.id}) ` +
-            `tried to use command '${message}' (in channel '${message.channel.name})'`, message.guild);
+            `tried to use admin-only command '${message}' (in channel '${message.channel.name})'`, message.guild);
         message.reply(`Only admins can use this command!`)
             .catch(reason => Logger.error(reason, message.guild));
         return;
