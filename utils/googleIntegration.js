@@ -92,7 +92,7 @@ async function authorize(client, func) {
     }
     
     Logger.info('calling actual function', 'SPREADSHEETS');
-    if (func) func();
+    if (func) func(client);
 }
 
 module.exports = {
