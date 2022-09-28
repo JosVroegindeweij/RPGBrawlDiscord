@@ -1,5 +1,6 @@
 const Logger = require('../utils/logger');
 const dbHandler = require('../utils/databaseHandler');
+const {Colors} = require("discord.js");
 
 async function execute(message, args) {
     if (!args.length || args.length > 2) {
@@ -29,7 +30,7 @@ async function execute(message, args) {
     if (!linkedRole) {
         message.guild.roles.create({
             name: 'linked',
-            color: 'DEFAULT',
+            color: Colors.Default,
             permissions: 0n
         })
             .then(role => {

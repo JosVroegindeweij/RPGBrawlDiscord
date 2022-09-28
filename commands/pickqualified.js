@@ -2,7 +2,7 @@ const dbHandler = require('../utils/databaseHandler');
 const Logger = require('../utils/logger');
 const GoogleIntegration = require('../utils/googleIntegration');
 const Admin = require('./admin');
-const {PermissionsBitField} = require("discord.js");
+const {PermissionsBitField, Colors} = require("discord.js");
 
 let members = [];
 let nrQualified = 32;
@@ -150,7 +150,7 @@ async function getRolesAndPermissionOverwrites(guild) {
 
     let playoffs = await guild.roles.create({
         name: 'playoffs',
-        color: 'YELLOW',
+        color: Colors.Blue,
         hoist: true,
         position: 6
     });
