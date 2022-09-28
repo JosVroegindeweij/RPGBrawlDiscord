@@ -73,16 +73,19 @@ async function determinePlayoffPlayers(guild) {
             `Si vous voulez participer, réagissez à ce message avec ✅, si vous voulez vous désister, réagissez avec ❌.\n\n`
         );
 
-        const filterAccept = (reaction, user) => !user.bot && reaction.emoji.name === '✅' &&
-            !guild.members.fetch(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
-        const filterDeny = (reaction, user) => !user.bot && reaction.emoji.name === '❌' &&
-            !guild.members.fetch(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
+        message.react('✅').catch(reason => Logger.error(reason, guild));
+        message.react('❌').catch(reason => Logger.error(reason, guild));
+        
+        const filterAccept = async (reaction, user) => !user.bot && reaction.emoji.name === '✅' &&
+            !(await guild.members.fetch(user)).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
+        const filterDeny = async (reaction, user) => !user.bot && reaction.emoji.name === '❌' &&
+            !(await guild.members.fetch(user)).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
 
         const collectorAccept = message.createReactionCollector({filter: filterAccept});
         const collectorDeny = message.createReactionCollector({filter: filterDeny});
-
-        collectorAccept.on('collect', (_, user) => {
-            const member = guild.members.fetch(user);
+        
+        collectorAccept.on('collect', async (_, user) => {
+            const member = await guild.members.fetch(user);
             if (member) {
                 member.roles.remove(roleInformation.qualified)
                     .then(member => member.roles.add(roleInformation.playoffs))
@@ -90,22 +93,25 @@ async function determinePlayoffPlayers(guild) {
             }
         });
 
-        collectorDeny.on('collect', (_, user) => {
-            const member = guild.members.fetch(user);
+        collectorDeny.on('collect', async (_, user) => {
+            const member = await guild.members.fetch(user);
             message.channel.send(
                 `${member}\n 🇬🇧 Are you sure you want to drop out?\n` +
                 `🇫🇷 Etes vous sur de vouloir vous désister?\n`
             ).then(confirmation => {
-                const filterAcceptMember = (reaction, user) => member === guild.members.fetch(user) && reaction.emoji.name === '✅' &&
-                    !guild.members.fetch(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
-                const filterDenyMember = (reaction, user) => member === guild.members.fetch(user) && reaction.emoji.name === '❌' &&
-                    !guild.members.fetch(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
+                confirmation.react('✅').catch(reason => Logger.error(reason, guild));
+                confirmation.react('❌').catch(reason => Logger.error(reason, guild));
+
+                const filterAcceptMember = async (reaction, user) => member === (await guild.members.fetch(user)) && reaction.emoji.name === '✅' &&
+                    !(await guild.members.fetch(user)).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
+                const filterDenyMember = async (reaction, user) => member === (await guild.members.fetch(user)) && reaction.emoji.name === '❌' &&
+                    !(await guild.members.fetch(user)).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
 
                 const collectorConfirmationAccept = confirmation.createReactionCollector({filter: filterAcceptMember});
                 const collectorConfirmationDeny = confirmation.createReactionCollector({filter: filterDenyMember});
 
-                collectorConfirmationAccept.on('collect', (_, user) => {
-                    const member = guild.members.fetch(user);
+                collectorConfirmationAccept.on('collect', async (_, user) => {
+                    const member = await guild.members.fetch(user);
                     if (member) {
                         member.roles.remove(roleInformation.qualified)
                             .then(member => member.roles.add(roleInformation.dropouts))
@@ -126,16 +132,8 @@ async function determinePlayoffPlayers(guild) {
                 collectorConfirmationDeny.on('collect', _ => {
                     confirmation.delete().catch(reason => Logger.error(reason, guild));
                 });
-
-                confirmation.react('✅').catch(reason => Logger.error(reason, guild));
-                confirmation.react('❌').catch(reason => Logger.error(reason, guild));
             })
         });
-
-        message.react('✅').catch(reason => Logger.error(reason, guild));
-        message.react('❌').catch(reason => Logger.error(reason, guild));
-
-
     } catch (err) {
         Logger.error(err, guild);
     }
