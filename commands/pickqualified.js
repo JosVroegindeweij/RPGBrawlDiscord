@@ -78,8 +78,8 @@ async function determinePlayoffPlayers(guild) {
         const filterDeny = (reaction, user) => !user.bot && reaction.emoji.name === '❌' &&
             !guild.members.cache.get(user).roles.cache.some(r => r.name === 'playoffs' || r.name === 'dropouts');
 
-        const collectorAccept = message.createReactionCollector(filterAccept);
-        const collectorDeny = message.createReactionCollector(filterDeny);
+        const collectorAccept = message.createReactionCollector({filter: filterAccept});
+        const collectorDeny = message.createReactionCollector({filter: filterDeny});
 
         collectorAccept.on('collect', (_, user) => {
             const member = guild.members.cache.get(user);
