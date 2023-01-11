@@ -15,7 +15,7 @@
     "discord.js": "^14.3.0",
     "google-auth-library": "^8.5.0",
     "googleapis": "^105.0.0",
-    "knex": "^0.21.16",
+    "knex": "^2.4.0",
     "lodash": "^4.17.21",
     "mysql": "^2.18.1",
     "node": "^15.3.0",
